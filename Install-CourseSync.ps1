@@ -15,8 +15,12 @@ if ($Run) {
     $log = Join-Path $logDir 'sync.log'
     Add-Content -LiteralPath $log -Value "$(Get-Date -Format o) Sync started"
     $ErrorActionPreference = 'Continue'
-    & $Python $sync $Source --git $Git 2>&1 | Out-File -LiteralPath $log -Append -Encoding utf8
-    exit $LASTEXITCODE
+    & $Python $sync $Source --git $Git 2>&1 |
+        ForEach-Object { $_.ToString() } |
+        Out-File -LiteralPath $log -Append -Encoding utf8
+    $exitCode = $LASTEXITCODE
+    Add-Content -LiteralPath $log -Value "$(Get-Date -Format o) Sync finished (exit code $exitCode)"
+    exit $exitCode
 }
 
 $credential = "protocol=https`nhost=github.com`n`n" | & $Git credential fill
