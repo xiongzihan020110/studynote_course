@@ -5,11 +5,13 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 from urllib.parse import quote, unquote
 
 parser = argparse.ArgumentParser()
 parser.add_argument("source", type=Path)
 parser.add_argument("--check", action="store_true")
+parser.add_argument("--git", default="git")
 args = parser.parse_args()
 repo = Path(__file__).resolve().parent
 source = args.source.resolve(strict=True)
@@ -24,10 +26,16 @@ pattern = re.compile(r"(\bfiles=)(\[.*?\])(, prefix=)", re.S)
 env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
 
 def git(*command):
-    return subprocess.check_output(
-        ["git", "-c", "http.sslBackend=openssl", *command],
-        cwd=repo, env=env, text=True,
-    ).strip()
+    result = subprocess.run(
+        [args.git, "-c", f"safe.directory={repo.as_posix()}",
+         "-c", "http.sslBackend=openssl", *command],
+        cwd=repo, env=env, stdout=subprocess.PIPE, text=True,
+        errors="replace",
+    )
+    if result.returncode:
+        print(f"git {command[0]} exited with code {result.returncode}.", file=sys.stderr)
+        raise SystemExit(result.returncode)
+    return result.stdout.strip()
 
 if not args.check:
     if git("status", "--porcelain"):
