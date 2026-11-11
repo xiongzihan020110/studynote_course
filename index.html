@@ -1,1 +1,49 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小熊同学的知识库</title><script>const hash=location.hash;location.replace(/^#\/courses\/python(?:\/|$)/.test(hash)?"./knowledge-base/python/"+location.search+hash:"./knowledge-base/"+location.search);</script><p><a href="./knowledge-base/">打开小熊同学的知识库</a></p></html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小熊同学的知识库</title>
+<style>
+:root{--bg:#f4f6f8;--ink:#182536;--muted:#556982;--line:#dfe6ee;--blue:#1766d4;--white:#fff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,"Microsoft YaHei",system-ui,sans-serif}main{max-width:1260px;padding:42px 24px 60px;margin:auto}header{text-align:center;margin:0 0 34px}h1{font-size:clamp(29px,4vw,46px);letter-spacing:-.025em;line-height:1.2;margin:4px 0 12px}header p{color:var(--muted);margin:0}.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:13px 0}.filters a,.category{padding:7px 17px;border:1px solid var(--line);border-radius:999px;background:#ecf0f4;text-decoration:none;color:var(--ink);white-space:nowrap}.category{background:var(--blue);color:white;border-color:var(--blue);font-weight:700;padding:9px 22px}.filters a[aria-current]{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}.heading{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:40px 0 12px;border-bottom:1px solid var(--line);padding:0 0 10px}.heading h2{margin:0;font-size:25px}.heading span{color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(175px,245px);gap:19px;align-items:start}.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:clamp(15px,3vw,28px);min-width:0}.panel h2{margin-top:0}.cards a,.files a{display:block;color:var(--ink);text-decoration:none;padding:9px 11px;border-radius:8px}.cards a{border:1px solid var(--line);margin:9px 0}.files a{font-size:14px;padding:5px 8px}.files strong{display:block;padding:0 8px 5px;color:var(--muted)}.cards a:hover,.files a:hover,.files a[aria-current]{background:#e8f1fd;color:#124f9d}a{color:#124f9d}a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}#content{overflow-wrap:anywhere}pre,table{display:block;overflow:auto;max-width:100%}pre{padding:12px;background:#edf4ff;border-radius:8px}td,th{padding:6px 9px;border:1px solid var(--line)}table{border-collapse:collapse}img{max-width:100%}[hidden]{display:none!important}@media(max-width:700px){main{padding:22px 13px 40px}.layout{grid-template-columns:1fr}.files{grid-row:1}.heading{margin-top:24px}.filters{gap:6px}.filters a{padding:5px 10px}}
+</style></head><body><main>
+<header><h1>小熊同学的知识库</h1><p>UTM 课程笔记与学习资料</p></header>
+<div class="filters"><span class="category">数据科学课程</span></div>
+<nav class="filters" aria-label="按课程筛选"><a href="#course-python" data-group="python">MCST1023</a><a href="#course-writing" data-group="writing">MCST1043</a><a href="#course-statistics" data-group="statistics">MCST1063</a><a href="#course-other" data-group="other">其他笔记</a></nav>
+<div class="heading"><h2 id="code">MCST1023</h2><span id="name">数据科学与编程（Python）</span></div>
+<div class="layout"><article class="panel"><div id="cards" class="cards"></div><a id="download" hidden download>下载 Markdown</a><div id="content"></div></article><nav class="files" id="files" aria-label="文件列表"></nav></div>
+</main><script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.3.3/dist/purify.min.js"></script>
+<script>
+if (/^#\/courses\/python(?:\/|$)/.test(location.hash)) location.replace("./knowledge-base/python/"+location.search+location.hash);
+window.addEventListener("DOMContentLoaded",()=>{
+ const groups=[["python","MCST1023","数据科学与编程（Python）"],["writing","MCST1043","写作分析"],["statistics","MCST1063","统计学"],["other","其他笔记","欢迎、备忘录与模板"]], files=[{"id":1,"group":"other","title":"欢迎","path":"%E6%AC%A2%E8%BF%8E.md"},{"id":2,"group":"python","title":"0 jupyter使用快件键","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/0%20jupyter%E4%BD%BF%E7%94%A8%E5%BF%AB%E4%BB%B6%E9%94%AE.md"},{"id":3,"group":"python","title":"1 第一章 重点知识详讲","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1%20%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E9%87%8D%E7%82%B9%E7%9F%A5%E8%AF%86%E8%AF%A6%E8%AE%B2.md"},{"id":4,"group":"python","title":"1.1 Assignment_1a_要求中文解释","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1.1%20Assignment_1a_%E8%A6%81%E6%B1%82%E4%B8%AD%E6%96%87%E8%A7%A3%E9%87%8A.md"},{"id":5,"group":"python","title":"Chapter 2 - Python 01 逐行讲解","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/Chapter%202%20-%20Python%2001%20%E9%80%90%E8%A1%8C%E8%AE%B2%E8%A7%A3.md"},{"id":6,"group":"python","title":"Python第二章_中文逐句稿与零基础讲解","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/Python%E7%AC%AC%E4%BA%8C%E7%AB%A0_%E4%B8%AD%E6%96%87%E9%80%90%E5%8F%A5%E7%A8%BF%E4%B8%8E%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":7,"group":"writing","title":"UTM硕士项目课程学习笔记","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1043%20%E5%86%99%E4%BD%9C%E5%88%86%E6%9E%90/UTM%E7%A1%95%E5%A3%AB%E9%A1%B9%E7%9B%AE%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md"},{"id":8,"group":"statistics","title":"Statistics_Case_A-D_Answers 第二次作业","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1063%20%E7%BB%9F%E8%AE%A1%E5%AD%A6/Statistics_Case_A-D_Answers%20%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A.md"},{"id":9,"group":"other","title":"第五周备忘录","path":"%E6%AF%8F%E5%91%A8%E5%A4%87%E5%BF%98%E5%BD%95/%E7%AC%AC%E4%BA%94%E5%91%A8%E5%A4%87%E5%BF%98%E5%BD%95.md"},{"id":10,"group":"other","title":"日记","path":"%E6%A8%A1%E6%9D%BF/%E6%97%A5%E8%AE%B0.md"}], prefix="./knowledge-base/", course="./knowledge-base/python/";
+ const get=id=>document.getElementById(id);
+ let revision=0;
+ function makeLink(parent,href,title,selected=false){
+  const link=document.createElement("a");link.href=href;link.textContent=title;
+  if(selected)link.setAttribute("aria-current","true");
+  parent.append(link);
+ }
+ async function render(){
+  const current=++revision;
+  const note=files.find(file=>location.hash==="#note-"+file.id);
+  const group=groups.find(([key])=>key===(note?.group??location.hash.slice(8)))??groups[0];
+  const [key,code,name]=group;
+  get("code").textContent=code;get("name").textContent=name;
+  for(const link of document.querySelectorAll("[data-group]")){
+   if(link.dataset.group===key)link.setAttribute("aria-current","true");else link.removeAttribute("aria-current");
+  }
+  const cards=get("cards"), list=get("files"), content=get("content"), download=get("download");
+  cards.replaceChildren();list.replaceChildren();content.replaceChildren();
+  const label=document.createElement("strong");label.textContent="文件列表";list.append(label);
+  cards.hidden=Boolean(note);download.hidden=!note;
+  if(key==="python"){makeLink(cards,course,"Python 第二章 · 课程笔记");makeLink(list,course,"Python 第二章 · 课程笔记");}
+  for(const file of files.filter(item=>item.group===key)){
+   const url="#note-"+file.id;makeLink(cards,url,file.title);makeLink(list,url,file.title,file===note);
+  }
+  if(!note)return;
+  download.href=prefix+note.path;content.textContent="正在加载笔记…";
+  try{
+   const response=await fetch(download.href);if(!response.ok)throw Error();
+   const markdown=await response.text();
+   if(current===revision)content.innerHTML=DOMPurify.sanitize(marked.parse(markdown),{USE_PROFILES:{html:true}});
+  }catch{if(current===revision)content.textContent="笔记预览加载失败，可以下载 Markdown 原文。";}
+ }
+ window.addEventListener("hashchange",render);render();
+});
+</script></body></html>
