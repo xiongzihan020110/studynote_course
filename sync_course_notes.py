@@ -13,9 +13,10 @@ parser.add_argument("--check", action="store_true")
 args = parser.parse_args()
 repo = Path(__file__).resolve().parent
 source = args.source.resolve(strict=True)
-if source.name != "马来西亚-数据科学硕士" or not source.is_dir():
-    raise SystemExit("Please select the 马来西亚-数据科学硕士 folder.")
-dest = repo / "knowledge-base" / source.name
+published_folder = "马来西亚-数据科学硕士"
+if source.name not in {published_folder, "Malaysia_Datascience"} or not source.is_dir():
+    raise SystemExit("Please select the Malaysia_Datascience or 马来西亚-数据科学硕士 folder.")
+dest = repo / "knowledge-base" / published_folder
 group_keys = {"1023": "python", "1043": "writing", "1063": "statistics"}
 extensions = {".md", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif"}
 pages = [repo / "index.html", repo / "knowledge-base/index.html"]
@@ -53,7 +54,7 @@ for path in sorted(source.rglob("*")):
     if path.name == "2 Python第二章_中文逐句稿与零基础讲解.md":
         relative = relative.with_name(path.name[2:])
     target = dest / relative
-    index_path = (Path(source.name) / relative).as_posix()
+    index_path = (Path(published_folder) / relative).as_posix()
     if path.suffix.lower() == ".md" and index_path not in by_path:
         entries.append({"id": next_id, "group": group, "title": relative.stem,
                         "path": quote(index_path, safe="/~!*'()")})
