@@ -1,11 +1,14 @@
 param(
     [Parameter(Mandatory=$true)][string]$Source,
     [string]$Python = 'python.exe',
+    [string]$Git = 'git.exe',
     [switch]$Run
 )
 $ErrorActionPreference = 'Stop'
 $Source = (Resolve-Path -LiteralPath $Source).Path
 $Python = (Get-Command $Python -CommandType Application).Source
+$Git = (Get-Command $Git -CommandType Application).Source
+$env:Path = (Split-Path -Parent $Git) + [IO.Path]::PathSeparator + $env:Path
 $sync = Join-Path $PSScriptRoot 'sync_course_notes.py'
 $logDir = Join-Path $env:LOCALAPPDATA 'StudynoteSync'
 if ($Run) {
@@ -17,7 +20,7 @@ if ($Run) {
     exit $LASTEXITCODE
 }
 
-$credential = "protocol=https`nhost=github.com`n`n" | git credential fill
+$credential = "protocol=https`nhost=github.com`n`n" | & $Git credential fill
 if (-not ($credential -match '^password=.+')) { throw 'Sign in to GitHub through Git Credential Manager first.' }
 Remove-Variable credential
 & $Python $sync $Source --check
@@ -25,7 +28,7 @@ if ($LASTEXITCODE -ne 0) { throw 'The source check failed.' }
 & $Python $sync $Source
 if ($LASTEXITCODE -ne 0) { throw 'The first sync failed. Check GitHub login and Git settings.' }
 $exe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Source "{1}" -Python "{2}" -Run' -f $PSCommandPath,$Source,$Python
+$arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Source "{1}" -Python "{2}" -Git "{3}" -Run' -f $PSCommandPath,$Source,$Python,$Git
 $action = New-ScheduledTaskAction -Execute $exe -Argument $arguments
 $trigger = New-ScheduledTaskTrigger -Daily -At '22:00'
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew
