@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Python 第二章 · 课程笔记</title>
+<style>
+:root{color-scheme:light;--bg:#f3f6fb;--paper:#fff;--ink:#17253c;--sub:#526580;--line:#dce5f1;--blue:#175db2;--soft:#edf5ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 Inter,"Microsoft YaHei",system-ui,sans-serif}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}.top{background:var(--paper);border-bottom:1px solid var(--line)}.top div{max-width:1160px;margin:auto;padding:12px 24px;display:flex;justify-content:space-between;gap:12px}.brand{font-weight:750;color:var(--ink)}.wrap{max-width:1160px;margin:auto;padding:32px 24px 64px}.hero{background:#132b4d;color:white;border-radius:18px;padding:28px 34px}.hero p{margin:0;color:#c3d7f3}.hero h1{margin:3px 0;font-size:clamp(27px,5vw,43px);line-height:1.25;letter-spacing:-.025em}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.tabs a{padding:6px 14px;border:1px solid var(--line);border-radius:100px;background:var(--paper);font-weight:650}.tabs a[aria-current=page]{background:var(--blue);border-color:var(--blue);color:white}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);align-items:start;gap:16px}.card{background:var(--paper);border:1px solid var(--line);border-radius:13px}.outline{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding:15px}.outline strong{display:block;margin-bottom:5px}.outline a{display:block;font-size:13px;padding:5px 7px;border-radius:6px;color:var(--sub);line-height:1.5}.outline a:hover,.outline a[aria-current=location]{background:var(--soft);color:var(--blue)}.content{padding:clamp(14px,4vw,35px);overflow-wrap:anywhere}.content h2{margin:0 0 13px;font-size:25px}.content h3{margin-top:26px;padding-bottom:5px;border-bottom:1px solid var(--line);font-size:20px}.content h4{font-size:17px}.content [id]{scroll-margin-top:16px}.content p{margin:10px 0}.content pre{background:#13253e;color:#f1f6ff;padding:14px;border-radius:8px;overflow:auto;white-space:pre;overflow-wrap:normal}.content code{font-family:"IBM Plex Mono",Consolas,monospace;font-size:.91em}.content :not(pre)>code{background:var(--soft);padding:1px 4px;border-radius:4px}.content table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px}.content th,.content td{border:1px solid var(--line);padding:6px 10px;text-align:left}.content th{background:var(--soft)}.content blockquote{border-left:3px solid var(--blue);margin:12px 0;padding:2px 13px;background:var(--soft)}.content img{max-width:100%}.transcript h3{background:var(--soft);padding:8px 12px;border-radius:6px}.transcript p{padding-bottom:8px;border-bottom:1px solid var(--line)}.back{margin-top:24px;display:inline-block}.error{color:#9e2f27}[hidden]{display:none!important}@media(max-width:740px){.wrap{padding:16px 12px 40px}.top div{padding:9px 12px}.hero{padding:18px}.layout{grid-template-columns:1fr}.outline{position:static;max-height:190px}.outline a{display:inline-block}.content h3{font-size:18px}}
+</style></head>
+<body>
+<header class="top" id="top"><div><a class="brand" href="../">小熊同学的知识库</a><a href="../%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/Python%E7%AC%AC%E4%BA%8C%E7%AB%A0_%E4%B8%AD%E6%96%87%E9%80%90%E5%8F%A5%E7%A8%BF%E4%B8%8E%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md" download>下载 Markdown</a></div></header>
+<main class="wrap"><header class="hero"><p>Python 基础 · 第二章</p><h1>元组与列表</h1><p>含字典、集合、推导式与 Notebook 练习</p></header>
+<nav class="tabs" aria-label="课程内容"><a id="notes-tab" href="#/courses/python/notes">零基础讲解</a><a id="transcript-tab" href="#/courses/python/transcript">中英逐句对照</a></nav>
+<div class="layout"><aside class="outline card"><strong>本页目录</strong><nav id="outline" aria-label="小节目录"></nav></aside><article class="content card" id="reading"><p id="status" role="status">正在加载课程笔记…</p><div id="notes" hidden></div><div class="transcript" id="transcript" hidden></div><a class="back" href="#/courses/python/notes" id="back" hidden>回到顶部 ↑</a></article></div>
+</main>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.3.3/dist/purify.min.js"></script>
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+  const byId = id => document.getElementById(id);
+  const root = "#/courses/python/";
+  const route = () => {
+    const [section, anchor] = location.hash.replace(/^#\/courses\/python\/?/, "").split("/");
+    return {section: section === "transcript" ? "transcript" : "notes", anchor};
+  };
+  const sections = ["notes", "transcript"];
+  const headings = {};
+  function show() {
+    const {section, anchor} = route();
+    const outline = byId("outline");
+    outline.replaceChildren();
+    for (const name of sections) {
+      byId(name).hidden = name !== section;
+      if (name === section) byId(name + "-tab").setAttribute("aria-current", "page");
+      else byId(name + "-tab").removeAttribute("aria-current");
+    }
+    for (const heading of headings[section]) {
+      const link = document.createElement("a");
+      link.href = root + section + "/" + heading.id;
+      link.textContent = heading.textContent;
+      if (anchor === heading.id) link.setAttribute("aria-current", "location");
+      outline.append(link);
+    }
+    const target = anchor && byId(anchor);
+    if (target && byId(section).contains(target)) target.scrollIntoView();
+    else window.scrollTo(0, 0);
+  }
+  try {
+    const response = await fetch("../%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/Python%E7%AC%AC%E4%BA%8C%E7%AB%A0_%E4%B8%AD%E6%96%87%E9%80%90%E5%8F%A5%E7%A8%BF%E4%B8%8E%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md");
+    if (!response.ok) throw new Error("Markdown unavailable");
+    const source = await response.text();
+    const start = source.search(/^## 一、零基础讲解\s*$/m);
+    const boundary = source.search(/^## 二、中英逐句对照稿\s*$/m);
+    if (start < 0 || boundary <= start) throw new Error("Unexpected chapter structure");
+    const segments = [source.slice(start, boundary), source.slice(boundary)];
+    for (const [index, section] of sections.entries()) {
+      const container = byId(section);
+      container.innerHTML = DOMPurify.sanitize(marked.parse(segments[index]), {USE_PROFILES:{html:true}});
+      headings[section] = Array.from(container.querySelectorAll("h3"));
+      headings[section].forEach((heading, number) => { heading.id = section + "-" + (number + 1); });
+    }
+    byId("status").hidden = true;
+    byId("back").hidden = false;
+    byId("back").addEventListener("click", event => { event.preventDefault(); window.scrollTo(0, 0); });
+    window.addEventListener("hashchange", show);
+    show();
+  } catch {
+    const status = byId("status");
+    status.classList.add("error");
+    status.textContent = "暂时无法加载笔记。请刷新页面，或点击右上角下载 Markdown 原文。";
+  }
+});
+</script></body></html>
