@@ -51,7 +51,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 .home .section-head{justify-content:flex-end}.home .topbar .gold-action{text-decoration:none;overflow-wrap:anywhere}
 </style><link rel="stylesheet" href="../avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="../home-cover.css"></head>
-<body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a></header>
+<body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a><a class="gold-action" id="top-contact" href="mailto:xzh210858572@163.com">xzh210858572@163.com</a></header>
 <section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">enter</button></div></section>
 <main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
 <section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索" placeholder="搜索"></div>
@@ -181,6 +181,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   const isHome=!note&&!path;
   document.body.classList.toggle("home",isHome);
   get("home-cover").hidden=!isHome;
+  get("top-contact").hidden=!isHome;
   get("crumbs").hidden=isHome;
   if(!isHome)breadcrumbs(path,note);
   get("title").hidden=isHome||Boolean(note);
