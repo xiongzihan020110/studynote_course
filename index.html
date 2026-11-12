@@ -32,8 +32,26 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 @media(max-width:540px){.grid{grid-template-columns:1fr}.section-head{align-items:stretch;flex-direction:column}.search{width:100%}}
 #title{font-family:"Bricolage Grotesque",Inter,"Microsoft YaHei",system-ui,sans-serif;font-weight:800}
 .cover img{width:100%;height:100%;display:block;object-fit:cover}
-</style><link rel="stylesheet" href="avatar.css"></head>
-<body><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>小熊同学的知识库</a></header>
+
+.home{--bg:#f6eedb;--paper:#fbf6e9;--ink:#2c241a;--muted:#695a47;--line:#e5d8bc;--accent:#684726;color-scheme:light}
+.home .topbar{background:#f3e8c9;min-height:72px;justify-content:space-between;gap:12px}
+.home .brand{font-family:"Cormorant Garamond","Songti SC",SimSun,serif;font-size:clamp(16px,2.1vw,23px);color:#352716}
+.hero-photo{background-color:#263128;background-size:cover;background-position:center 51%;color:#fffaf0;min-height:clamp(350px,53vw,680px);display:grid;place-items:center;text-align:center;padding:50px 22px}
+.hero-photo h1{font-family:"Cormorant Garamond","Songti SC","Noto Serif CJK SC",SimSun,serif;font-weight:600;font-size:clamp(37px,6vw,94px);line-height:1.11;letter-spacing:-.025em;text-shadow:0 2px 14px #1c160cb0;max-width:950px;margin-inline:auto}
+.hero-photo h1 strong{font-weight:700}
+.gold-action{font:700 .9rem/1.2 Inter,"Microsoft YaHei",sans-serif;color:#2f230b;background:#f0c91f;border:0;border-radius:999px;padding:12px 21px;cursor:pointer}
+.gold-action:hover{background:#ffdc3e}.gold-action:focus-visible{outline:3px solid #9e6e14;outline-offset:4px}
+.hero-photo .gold-action{margin-top:27px}
+.home main{padding-top:0}
+.home .overview{margin-top:32px}
+.home .search,.home .folder-card{background:#f5ebd6;border-color:#dfcfaa}
+.home .folder-card:hover{border-color:#b8913d;box-shadow:0 5px 14px #583b1c26}
+.home .row:hover{background:#f3e7ce}
+@media(max-width:540px){.home .topbar{min-height:61px}.home .topbar .gold-action{padding:9px 12px}.hero-photo{min-height:360px}}
+</style><link rel="stylesheet" href="avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
+<link rel="stylesheet" href="home-cover.css"></head>
+<body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>小熊同学的知识库</a><button class="gold-action" id="top-browse" type="button">浏览文件夹</button></header>
+<section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">浏览文件夹</button></div></section>
 <main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
 <section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索文件夹" placeholder="搜索文件夹"></div>
 <div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
@@ -83,7 +101,7 @@ window.addEventListener("DOMContentLoaded",()=>{
  }
 
 
- const homeTitle="Welcome to Little Bear’s Knowledge Base";
+ const homeTitle="欢迎来到Xizh的知识库";
  const get=id=>document.getElementById(id);
  const folders=new Set();
  function addFolder(path){
@@ -160,9 +178,12 @@ window.addEventListener("DOMContentLoaded",()=>{
   }
   if(!folders.has(path))path="";
   const isHome=!note&&!path;
+  document.body.classList.toggle("home",isHome);
+  get("home-cover").hidden=!isHome;
+  get("top-browse").hidden=!isHome;
   get("crumbs").hidden=isHome;
   if(!isHome)breadcrumbs(path,note);
-  get("title").hidden=Boolean(note);
+  get("title").hidden=isHome||Boolean(note);
   get("title").textContent=path?path.split("/").at(-1):homeTitle;
   get("section-head").hidden=Boolean(note);
   get("section-title").textContent=isHome?"文件夹":"目录";
@@ -216,11 +237,14 @@ window.addEventListener("DOMContentLoaded",()=>{
    if(current===revision)reader.textContent="无法预览笔记，可以下载原文。";
   }
  }
+ for(const id of ["top-browse","hero-browse"]){
+  get(id).addEventListener("click",()=>get("section-head").scrollIntoView({block:"start"}));
+ }
  get("search").addEventListener("input",event=>{
   const count=folderCards("",event.target.value.trim().toLowerCase());
   get("empty").textContent="没有找到匹配的文件夹。";get("empty").hidden=Boolean(count);
  });
- window.addEventListener("hashchange",render);render();
+ window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});render();
 
 });
 </script></body></html>
