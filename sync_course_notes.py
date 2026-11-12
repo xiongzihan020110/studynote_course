@@ -1,4 +1,6 @@
 import argparse
+import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -24,6 +26,50 @@ pages = [repo / "index.html", repo / "knowledge-base/index.html"]
 pattern = re.compile(r"(\bfiles=)(\[.*?\])(, prefix=)", re.S)
 folder_pattern = re.compile(r"^( +const syncedFolders=)(\[.*\]);$", re.M)
 env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
+
+cover_pattern = re.compile(r"^( +const folderCovers=)(\{.*\});$", re.M)
+cover_source = Path("D:/系统/桌面/codex/课件笔记网站/标签图")
+cover_dir = repo / "assets/folder-covers"
+
+def plan_covers(folders, previous):
+    if not cover_source.is_dir():
+        return previous, {}, []
+    from PIL import Image, ImageOps, UnidentifiedImageError
+
+    candidates = {}
+    for path in sorted(cover_source.iterdir()):
+        if path.is_symlink() or not path.is_file() or path.suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
+            continue
+        try:
+            with Image.open(path) as image:
+                landscape = ImageOps.exif_transpose(image)
+                if landscape.width > landscape.height:
+                    name = hashlib.sha256(path.name.encode("utf-8")).hexdigest()[:24] + ".jpg"
+                    candidates[name] = path
+        except (UnidentifiedImageError, OSError) as error:
+            print(f"Skip cover {path.name}: {error}", file=sys.stderr)
+
+    result = {folder: previous[folder] for folder in folders if previous.get(folder) in candidates}
+    used = set(result.values())
+    for folder in folders:
+        if folder not in result and candidates:
+            name = next((name for name in candidates if name not in used), None)
+            if name is None:
+                names = list(candidates)
+                name = names[int(hashlib.sha256(folder.encode()).hexdigest(), 16) % len(names)]
+            result[folder] = name
+            used.add(name)
+    updates = {}
+    for name in used:
+        target = cover_dir / name
+        with Image.open(candidates[name]) as image:
+            thumbnail = ImageOps.fit(ImageOps.exif_transpose(image).convert("RGB"), (720, 280))
+            data = io.BytesIO()
+            thumbnail.save(data, "JPEG", quality=80, optimize=True)
+        if not target.is_file() or target.read_bytes() != data.getvalue():
+            updates[target] = data.getvalue()
+    stale = [path for path in cover_dir.glob("*.jpg") if re.fullmatch(r"[0-9a-f]{24}\.jpg", path.name) and path.name not in used]
+    return result, updates, stale
 
 def git(*command):
     result = subprocess.run(
@@ -95,6 +141,9 @@ stale = sorted(repo / name for name in tracked.split("\0")
 
 index = json.dumps(entries, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
 folder_index = json.dumps(folders, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
+old_covers = cover_pattern.search(home)
+cover_map, cover_updates, cover_stale = plan_covers(folders, json.loads(old_covers[2]) if old_covers else {})
+cover_index = json.dumps(cover_map, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
 updates = {}
 for page in pages:
     old = page.read_text(encoding="utf-8")
@@ -104,10 +153,13 @@ for page in pages:
     new, folder_count = folder_pattern.subn(lambda m: m[1] + folder_index + ";", new, count=1)
     if folder_count != 1:
         raise SystemExit(f"Cannot update the website's folder index in {page.name}.")
+    new = cover_pattern.sub(lambda m: m[1] + cover_index + ";", new, count=1)
     if new != old:
         updates[page] = new
 
 print(f"{len(changes)} content updates, {len(updates)} index updates, {len(stale)} removals.")
+if cover_updates or cover_stale:
+    print(f"{len(cover_updates)} cover updates, {len(cover_stale)} cover removals.")
 for _, target in changes:
     print(target.relative_to(repo))
 for target in stale:
@@ -115,15 +167,20 @@ for target in stale:
 if args.check:
     raise SystemExit(0)
 
-for target in stale:
+for target in stale + cover_stale:
     target.unlink()
+for target, data in cover_updates.items():
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
 for original, target in changes:
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(original, target)
 for page, content in updates.items():
     page.write_text(content, encoding="utf-8", newline="\n")
-if changes or updates or stale:
+if changes or updates or stale or cover_updates or cover_stale:
     git("add", "-A", "--", "knowledge-base", "index.html")
+    if cover_updates or cover_stale:
+        git("add", "-A", "--", "assets/folder-covers")
     if repo / "python-chapter-2.md" in stale:
         git("add", "-u", "--", "python-chapter-2.md")
     if git("diff", "--cached", "--name-only"):
