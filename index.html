@@ -48,12 +48,13 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 .home .folder-card:hover{border-color:#b8913d;box-shadow:0 5px 14px #583b1c26}
 .home .row:hover{background:#f3e7ce}
 @media(max-width:540px){.home .topbar{min-height:61px}.home .topbar .gold-action{padding:9px 12px}.hero-photo{min-height:360px}}
+.home .section-head{justify-content:flex-end}.home .topbar .gold-action{text-decoration:none;overflow-wrap:anywhere}
 </style><link rel="stylesheet" href="avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="home-cover.css"></head>
-<body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>小熊同学的知识库</a><button class="gold-action" id="top-browse" type="button">浏览文件夹</button></header>
-<section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">浏览文件夹</button></div></section>
+<body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a></header>
+<section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">enter</button></div></section>
 <main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
-<section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索文件夹" placeholder="搜索文件夹"></div>
+<section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索" placeholder="搜索"></div>
 <div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
 </section></main>
 <script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
@@ -180,13 +181,12 @@ window.addEventListener("DOMContentLoaded",()=>{
   const isHome=!note&&!path;
   document.body.classList.toggle("home",isHome);
   get("home-cover").hidden=!isHome;
-  get("top-browse").hidden=!isHome;
   get("crumbs").hidden=isHome;
   if(!isHome)breadcrumbs(path,note);
   get("title").hidden=isHome||Boolean(note);
   get("title").textContent=path?path.split("/").at(-1):homeTitle;
   get("section-head").hidden=Boolean(note);
-  get("section-title").textContent=isHome?"文件夹":"目录";
+  get("section-title").hidden=isHome;
   get("search").hidden=!isHome;
   get("search").value="";
   get("folders").hidden=Boolean(note);
@@ -237,9 +237,7 @@ window.addEventListener("DOMContentLoaded",()=>{
    if(current===revision)reader.textContent="无法预览笔记，可以下载原文。";
   }
  }
- for(const id of ["top-browse","hero-browse"]){
-  get(id).addEventListener("click",()=>get("section-head").scrollIntoView({block:"start"}));
- }
+ get("hero-browse").addEventListener("click",()=>get("section-head").scrollIntoView({block:"start"}));
  get("search").addEventListener("input",event=>{
   const count=folderCards("",event.target.value.trim().toLowerCase());
   get("empty").textContent="没有找到匹配的文件夹。";get("empty").hidden=Boolean(count);
