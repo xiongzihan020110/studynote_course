@@ -38,6 +38,8 @@ def plan_covers(folders, previous):
 
     candidates = {}
     for path in sorted(cover_source.iterdir()):
+        if path.name.casefold() == "avatar.png":
+            continue
         if path.is_symlink() or not path.is_file() or path.suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
             continue
         try:
