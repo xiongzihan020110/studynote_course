@@ -40,7 +40,11 @@ def git(*command):
 if not args.check:
     if git("status", "--porcelain"):
         raise SystemExit("The sync checkout has pending changes. Review them before retrying.")
+    script = Path(__file__).resolve()
+    running_version = script.read_bytes()
     git("pull", "--ff-only", "origin", "main")
+    if script.read_bytes() != running_version:
+        raise SystemExit(subprocess.call([sys.executable, *sys.argv]))
 
 home = pages[0].read_text(encoding="utf-8")
 match = pattern.search(home)
