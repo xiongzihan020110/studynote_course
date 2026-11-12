@@ -50,13 +50,17 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 @media(max-width:540px){.home .topbar{min-height:61px}.home .topbar .gold-action{padding:9px 12px}.hero-photo{min-height:360px}}
 .home .section-head{justify-content:flex-end}.home .topbar .gold-action{text-decoration:none;overflow-wrap:anywhere}
 .site-footer{display:none;text-align:center;padding:14px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}.home .site-footer{display:block}
+
+.note-pager{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.note-pager[hidden],.note-pager>[hidden]{display:none}.note-pager>*{display:block;text-align:center;padding:8px 6px;border:1px solid var(--line);border-radius:8px;font-size:.95rem}
+.note-pager a{text-decoration:none}.note-pager a:hover{background:#242e55}.note-pager [aria-disabled]{opacity:.55}
 </style><link rel="stylesheet" href="../avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="../home-cover.css"><link rel="stylesheet" href="../folder-cover-seed.css"></head>
 <body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a><a class="gold-action" id="top-contact" href="mailto:xzh210858572@163.com">xzh210858572@163.com</a></header>
 <section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">enter</button></div></section>
 <main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
 <section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索" placeholder="搜索"></div>
-<div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
+<div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article><nav id="note-pager" class="note-pager" aria-label="笔记翻页" hidden></nav></div><aside class="side" id="attachments" hidden></aside></div>
 </section></main>
 <footer class="site-footer">仅用于个人学习，任何人不得随意转载</footer>
 <script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
@@ -163,6 +167,24 @@ window.addEventListener("DOMContentLoaded",()=>{
   }
   return grid.childElementCount;
  }
+ function renderPager(note,notes){
+  const pager=get("note-pager");
+  pager.hidden=!note;
+  pager.replaceChildren();
+  if(!note)return;
+  const position=notes.indexOf(note);
+  function neighbor(file,label){
+   if(file){
+    link(pager,"#note-"+file.id,label).title=file.title;
+   }else{
+    const unavailable=document.createElement("span");
+    unavailable.textContent=label;unavailable.setAttribute("aria-disabled","true");pager.append(unavailable);
+   }
+  }
+  neighbor(position>=0?notes[position-1]:null,"← 上一页");
+  link(pager,"../","首页");
+  neighbor(position>=0?notes[position+1]:null,"下一页 →");
+ }
  let revision=0;
  async function render(){
   const current=++revision;
@@ -197,6 +219,8 @@ window.addEventListener("DOMContentLoaded",()=>{
   list.replaceChildren();side.replaceChildren();reader.replaceChildren();
   download.hidden=!note;
   const direct=files.filter(file=>file.folder===path);
+  const notes=direct.filter(file=>!isAttachment(file)).sort((a,b)=>sortNames(a.title,b.title));
+  renderPager(note,notes);
   const attachments=files.filter(file=>isAttachment(file)&&(file.folder===path||
    (path?file.folder.startsWith(path+"/"):false)&&file.folder.slice(path.length+1).split("/")[0]==="附件"));
   side.hidden=!attachments.length;
@@ -211,7 +235,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   get("empty").hidden=true;
   if(!note){
    const count=folderCards(path);
-   for(const file of direct.filter(file=>!isAttachment(file)).sort((a,b)=>sortNames(a.title,b.title))){
+   for(const file of notes){
     link(list,"#note-"+file.id,file.title,"row");
    }
    if(path.startsWith("1023 ")&&parentOf(path)===""&&direct.some(file=>/^2 第二章/.test(file.title))){
