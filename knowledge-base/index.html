@@ -49,14 +49,16 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 .home .row:hover{background:#f3e7ce}
 @media(max-width:540px){.home .topbar{min-height:61px}.home .topbar .gold-action{padding:9px 12px}.hero-photo{min-height:360px}}
 .home .section-head{justify-content:flex-end}.home .topbar .gold-action{text-decoration:none;overflow-wrap:anywhere}
+.site-footer{display:none;text-align:center;padding:14px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}.home .site-footer{display:block}
 </style><link rel="stylesheet" href="../avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
-<link rel="stylesheet" href="../home-cover.css"></head>
+<link rel="stylesheet" href="../home-cover.css"><link rel="stylesheet" href="../folder-cover-seed.css"></head>
 <body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a><a class="gold-action" id="top-contact" href="mailto:xzh210858572@163.com">xzh210858572@163.com</a></header>
 <section class="hero-photo" id="home-cover" aria-label="知识库封面"><div><h1>欢迎来到<strong>Xizh</strong>的知识库</h1><button class="gold-action" id="hero-browse" type="button">enter</button></div></section>
 <main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
 <section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索" placeholder="搜索"></div>
 <div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
 </section></main>
+<footer class="site-footer">仅用于个人学习，任何人不得随意转载</footer>
 <script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.3.3/dist/purify.min.js"></script>
 <script>
@@ -150,7 +152,7 @@ window.addEventListener("DOMContentLoaded",()=>{
    if(query&&!label.toLowerCase().includes(query)&&!name.toLowerCase().includes(query))continue;
    const count=files.filter(file=>file.relative.startsWith(child+"/")&&!isAttachment(file)).length;
    const card=link(grid,folderUrl(child),"","folder-card");
-   const cover=document.createElement("div");cover.className="cover";cover.setAttribute("aria-hidden","true");
+   const cover=document.createElement("div");cover.className="cover";cover.dataset.folder=child;cover.setAttribute("aria-hidden","true");
    if(folderCovers[child]){
     const image=document.createElement("img");image.alt="";image.loading="lazy";image.src="../assets/folder-covers/"+encodeURIComponent(folderCovers[child]);cover.append(image);
    }
