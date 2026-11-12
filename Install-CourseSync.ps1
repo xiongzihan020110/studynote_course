@@ -33,9 +33,9 @@ if ($LASTEXITCODE -ne 0) { throw 'The first sync failed. See the Git error above
 $exe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 $arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Source "{1}" -Python "{2}" -Git "{3}" -Run' -f $PSCommandPath,$Source,$Python,$Git
 $action = New-ScheduledTaskAction -Execute $exe -Argument $arguments
-$trigger = New-ScheduledTaskTrigger -Daily -At '22:00'
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 2)
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew
 $user = [Security.Principal.WindowsIdentity]::GetCurrent().Name
 $principal = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive
 Register-ScheduledTask -TaskName 'Studynote Course Sync' -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
-Write-Output "Scheduled daily at 22:00 local time for $user. Log: $logDir"
+Write-Output "Scheduled every 2 minutes while $user is signed in. Log: $logDir"

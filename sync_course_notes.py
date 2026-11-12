@@ -20,7 +20,6 @@ if source.name not in {published_folder, "Malaysia_Datascience"} or not source.i
     raise SystemExit("Please select the Malaysia_Datascience or 马来西亚-数据科学硕士 folder.")
 dest = repo / "knowledge-base" / published_folder
 group_keys = {"1023": "python", "1043": "writing", "1063": "statistics"}
-extensions = {".md", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif"}
 pages = [repo / "index.html", repo / "knowledge-base/index.html"]
 pattern = re.compile(r"(\bfiles=)(\[.*?\])(, prefix=)", re.S)
 env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
@@ -29,7 +28,7 @@ def git(*command):
     result = subprocess.run(
         [args.git, "-c", f"safe.directory={repo.as_posix()}",
          "-c", "http.sslBackend=openssl", *command],
-        cwd=repo, env=env, stdout=subprocess.PIPE, text=True,
+        cwd=repo, env=env, stdout=subprocess.PIPE, text=True, encoding="utf-8",
         errors="replace",
     )
     if result.returncode:
@@ -46,27 +45,31 @@ home = pages[0].read_text(encoding="utf-8")
 match = pattern.search(home)
 if not match:
     raise SystemExit("Cannot find the website's note index.")
-entries = json.loads(match[2])
-by_path = {unquote(item["path"]): item for item in entries}
-next_id = max((item["id"] for item in entries), default=0) + 1
+previous_entries = json.loads(match[2])
+by_path = {unquote(item["path"]): item for item in previous_entries}
+next_id = max((item["id"] for item in previous_entries), default=0) + 1
+entries = []
+expected = set()
 changes = []
 for path in sorted(source.rglob("*")):
     relative = path.relative_to(source)
-    if len(relative.parts) < 2 or any(part.startswith(".") for part in relative.parts):
+    if any(part.startswith(".") for part in relative.parts):
         continue
-    group = group_keys.get(relative.parts[0].split(" ", 1)[0])
-    if not group or not path.is_file() or path.suffix.lower() not in extensions:
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(source):
         continue
-    if not path.resolve().is_relative_to(source):
-        continue
-    if path.name == "2 Python第二章_中文逐句稿与零基础讲解.md":
-        relative = relative.with_name(path.name[2:])
+    group = "other"
+    if len(relative.parts) > 1:
+        group = group_keys.get(relative.parts[0].split(" ", 1)[0], "other")
     target = dest / relative
+    expected.add(target)
     index_path = (Path(published_folder) / relative).as_posix()
-    if path.suffix.lower() == ".md" and index_path not in by_path:
-        entries.append({"id": next_id, "group": group, "title": relative.stem,
+    if path.suffix.lower() == ".md":
+        existing = by_path.get(index_path)
+        note_id = existing["id"] if existing else next_id
+        entries.append({"id": note_id, "group": group, "title": relative.stem,
                         "path": quote(index_path, safe="/~!*'()")})
-        next_id += 1
+        if not existing:
+            next_id += 1
     original = path.read_bytes()
     previous = target.read_bytes() if target.is_file() else None
     if previous is not None and path.suffix.lower() == ".md":
@@ -74,6 +77,12 @@ for path in sorted(source.rglob("*")):
         previous = previous.replace(b"\r\n", b"\n")
     if previous != original:
         changes.append((path, target))
+
+# The two HTML files under knowledge-base are site infrastructure.
+protected = {repo / "knowledge-base/index.html", repo / "knowledge-base/python/index.html"}
+tracked = git("-c", "core.quotepath=false", "ls-files", "-z", "--", "knowledge-base", "python-chapter-2.md")
+stale = sorted(repo / name for name in tracked.split("\0")
+               if name and repo / name not in expected | protected)
 
 index = json.dumps(entries, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
 updates = {}
@@ -85,19 +94,25 @@ for page in pages:
     if new != old:
         updates[page] = new
 
-print(f"{len(changes)} content updates, {len(updates)} index updates.")
+print(f"{len(changes)} content updates, {len(updates)} index updates, {len(stale)} removals.")
 for _, target in changes:
     print(target.relative_to(repo))
+for target in stale:
+    print(f"Remove: {target.relative_to(repo)}")
 if args.check:
     raise SystemExit(0)
 
+for target in stale:
+    target.unlink()
 for original, target in changes:
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(original, target)
 for page, content in updates.items():
     page.write_text(content, encoding="utf-8", newline="\n")
-if changes or updates:
-    git("add", "--", "knowledge-base", "index.html")
+if changes or updates or stale:
+    git("add", "-A", "--", "knowledge-base", "index.html")
+    if repo / "python-chapter-2.md" in stale:
+        git("add", "-u", "--", "python-chapter-2.md")
     if git("diff", "--cached", "--name-only"):
         git("commit", "-m", "Sync public course notes")
 if git("rev-list", "--count", "origin/main..HEAD") != "0":
