@@ -22,6 +22,7 @@ dest = repo / "knowledge-base" / published_folder
 group_keys = {"1023": "python", "1043": "writing", "1063": "statistics"}
 pages = [repo / "index.html", repo / "knowledge-base/index.html"]
 pattern = re.compile(r"(\bfiles=)(\[.*?\])(, prefix=)", re.S)
+folder_pattern = re.compile(r"^( +const syncedFolders=)(\[.*\]);$", re.M)
 env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
 
 def git(*command):
@@ -49,13 +50,18 @@ previous_entries = json.loads(match[2])
 by_path = {unquote(item["path"]): item for item in previous_entries}
 next_id = max((item["id"] for item in previous_entries), default=0) + 1
 entries = []
+folders = []
 expected = set()
 changes = []
 for path in sorted(source.rglob("*")):
     relative = path.relative_to(source)
     if any(part.startswith(".") for part in relative.parts):
         continue
-    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(source):
+    if path.is_symlink() or getattr(path, "is_junction", lambda: False)() or not path.resolve().is_relative_to(source):
+        continue
+    if path.is_dir() and len(relative.parts) == 1:
+        folders.append(relative.name)
+    if not path.is_file():
         continue
     group = "other"
     if len(relative.parts) > 1:
@@ -84,12 +90,16 @@ stale = sorted(repo / name for name in tracked.split("\0")
                if name and repo / name not in expected | protected)
 
 index = json.dumps(entries, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
+folder_index = json.dumps(folders, ensure_ascii=False, separators=(",", ":")).replace("<", r"\u003c")
 updates = {}
 for page in pages:
     old = page.read_text(encoding="utf-8")
     new, count = pattern.subn(lambda m: m[1] + index + m[3], old, count=1)
     if count != 1:
         raise SystemExit(f"Cannot update the note index in {page.name}.")
+    new, folder_count = folder_pattern.subn(lambda m: m[1] + folder_index + ";", new, count=1)
+    if folder_count != 1:
+        raise SystemExit(f"Cannot update the website's folder index in {page.name}.")
     if new != old:
         updates[page] = new
 
