@@ -63,13 +63,12 @@ for path in sorted(source.rglob("*")):
     target = dest / relative
     expected.add(target)
     index_path = (Path(published_folder) / relative).as_posix()
-    if path.suffix.lower() == ".md":
-        existing = by_path.get(index_path)
-        note_id = existing["id"] if existing else next_id
-        entries.append({"id": note_id, "group": group, "title": relative.stem,
-                        "path": quote(index_path, safe="/~!*'()")})
-        if not existing:
-            next_id += 1
+    existing = by_path.get(index_path)
+    note_id = existing["id"] if existing else next_id
+    entries.append({"id": note_id, "group": group, "title": relative.name,
+                    "path": quote(index_path, safe="/~!*'()")})
+    if not existing:
+        next_id += 1
     original = path.read_bytes()
     previous = target.read_bytes() if target.is_file() else None
     if previous is not None and path.suffix.lower() == ".md":
