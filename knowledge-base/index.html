@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小熊同学的知识库</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;display=swap">
 <style>
 :root{color-scheme:dark;--bg:#0b1028;--paper:#161e3c;--ink:#f7f8ff;--muted:#b9c3df;--line:#344064;--accent:#ff84ad}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,"Microsoft YaHei",system-ui,sans-serif}
@@ -28,9 +30,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 .reader{min-width:0;overflow-wrap:anywhere}.reader img{max-width:100%;height:auto}.reader pre{overflow:auto;padding:14px;border-radius:7px;background:#0d1430}.reader table{display:block;overflow:auto;border-collapse:collapse}.reader th,.reader td{padding:6px 10px;border:1px solid var(--line)}.reader h2,.reader h3{margin:1em 0 .4em}.reader p{margin:.75em 0}.download{display:inline-block;margin-bottom:8px}
 [hidden]{display:none!important}@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:1fr}}
 @media(max-width:540px){.grid{grid-template-columns:1fr}.section-head{align-items:stretch;flex-direction:column}.search{width:100%}}
+#title{font-family:"Bricolage Grotesque",Inter,"Microsoft YaHei",system-ui,sans-serif;font-weight:800}
 </style></head>
 <body><header class="topbar"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">熊</span>小熊同学的知识库</a></header>
-<main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">欢迎来到小熊同学的知识库</h1>
+<main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">Welcome to Little Bear’s Knowledge Base</h1>
 <section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索文件夹" placeholder="搜索文件夹"></div>
 <div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
 </section></main>
@@ -78,7 +81,7 @@ window.addEventListener("DOMContentLoaded",()=>{
  }
 
 
- const homeTitle="欢迎来到小熊同学的知识库";
+ const homeTitle="Welcome to Little Bear’s Knowledge Base";
  const get=id=>document.getElementById(id);
  const folders=new Set();
  function addFolder(path){
@@ -154,7 +157,8 @@ window.addEventListener("DOMContentLoaded",()=>{
   const isHome=!note&&!path;
   get("crumbs").hidden=isHome;
   if(!isHome)breadcrumbs(path,note);
-  get("title").textContent=note?.title??(path?path.split("/").at(-1):homeTitle);
+  get("title").hidden=Boolean(note);
+  get("title").textContent=path?path.split("/").at(-1):homeTitle;
   get("section-head").hidden=Boolean(note);
   get("section-title").textContent=isHome?"文件夹":"目录";
   get("search").hidden=!isHome;
