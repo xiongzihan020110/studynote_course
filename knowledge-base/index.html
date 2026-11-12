@@ -6,6 +6,7 @@
 .category,.filters a[aria-current],.tabs a[aria-current=page]{color:var(--accent-ink);background:#f5ae35;border-color:#f5ae35}
 .hero{border:1px solid var(--line)}
 ::selection{background:#f5ae35;color:var(--accent-ink)}
+#content img{max-width:100%;height:auto}
 </style></head><body><main>
 <header><h1>小熊同学的知识库</h1><p>UTM 课程笔记与学习资料</p></header>
 <div class="filters"><span class="category">数据科学课程</span></div>
@@ -47,6 +48,41 @@ window.addEventListener("DOMContentLoaded",()=>{
   if(selected)link.setAttribute("aria-current","true");
   parent.append(link);
  }
+ const imagePath=/\.(?:png|jpe?g|gif|webp|avif|svg|bmp|ico)$/i;
+ function renderMarkdown(markdown,note){
+  const notePath=decodeURIComponent(note.path);
+  const noteFolder=notePath.slice(0,notePath.lastIndexOf("/")+1);
+  const parser=new marked.Marked({extensions:[{
+   name:"obsidianImage",level:"inline",
+   start(src){return src.indexOf("![[");},
+   tokenizer(src){
+    const match=/^!\[\[([^\]\r\n]+)\]\]/.exec(src);
+    if(!match)return;
+    const name=match[1].split("|")[0].trim();
+    if(!imagePath.test(name))return;
+    const candidates=files.filter(file=>{
+     const path=decodeURIComponent(file.path);
+     return path===name||path.endsWith("/"+name);
+    });
+    const local=candidates.filter(file=>decodeURIComponent(file.path).startsWith(noteFolder));
+    const direct=candidates.find(file=>decodeURIComponent(file.path)===noteFolder+name);
+    const attachment=direct??(local.length===1?local[0]:candidates.length===1?candidates[0]:null);
+    if(attachment)return {type:"obsidianImage",raw:match[0],path:attachment.path};
+   },
+   renderer(token){
+    const img=document.createElement("img");
+    img.src=new URL(prefix+token.path,location.href).href;
+    img.alt="";img.loading="lazy";
+    return img.outerHTML;
+   }
+  }]});
+  const fragment=DOMPurify.sanitize(parser.parse(markdown),{USE_PROFILES:{html:true},RETURN_DOM_FRAGMENT:true});
+  for(const img of fragment.querySelectorAll("img[src]")){
+   const src=img.getAttribute("src");
+   if(!/^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(src))img.src=new URL(src,new URL(prefix+note.path,location.href)).href;
+  }
+  return fragment;
+ }
  async function render(){
   const current=++revision;
   const note=files.find(file=>location.hash==="#note-"+file.id);
@@ -68,12 +104,17 @@ window.addEventListener("DOMContentLoaded",()=>{
   download.href=prefix+note.path;
   const isMarkdown=/\.md$/i.test(note.path);
   download.textContent=isMarkdown?"下载 Markdown":"下载文件";
-  if(!isMarkdown){content.textContent="点击上方链接下载文件。";return;}
+  if(!isMarkdown){
+   if(imagePath.test(note.path)){
+    const img=document.createElement("img");img.src=download.href;img.alt=note.title;content.append(img);
+   }else content.textContent="点击上方链接下载文件。";
+   return;
+  }
   content.textContent="正在加载笔记…";
   try{
    const response=await fetch(download.href, {cache: "no-cache"});if(!response.ok)throw Error();
    const markdown=await response.text();
-   if(current===revision)content.innerHTML=DOMPurify.sanitize(marked.parse(markdown),{USE_PROFILES:{html:true}});
+   if(current===revision)content.replaceChildren(renderMarkdown(markdown,note));
   }catch{if(current===revision)content.textContent="笔记预览加载失败，可以下载 Markdown 原文。";}
  }
  window.addEventListener("hashchange",render);render();
