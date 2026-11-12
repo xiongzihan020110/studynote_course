@@ -1,0 +1,116 @@
+# 车辆工程与数据科学：公开数据集平台网址汇总
+
+> 用途：为车辆工程专业的数据科学研究、课程项目和毕业论文寻找公开数据集、配套论文及源代码。  
+> 整理日期：2026-11-12  
+>
+> **说明：** 本文列出的是数据集平台、科研数据仓库或专业数据门户，并不代表每个平台上的所有数据都能免费下载、商用或直接用于论文。使用前请逐项核查数据集页面的许可协议、引用要求、版本和访问条件。
+
+## 一、综合数据集与科研数据平台
+
+| 平台 | 官网 | 主要资源 | 适合的车辆工程研究方向 |
+|---|---|---|---|
+| Kaggle | [https://www.kaggle.com/datasets](https://www.kaggle.com/datasets) | 用户上传的数据集、竞赛数据、Notebook和实践项目 | 车辆能耗预测、电池数据分析、驾驶行为识别、交通预测 |
+| UCI Machine Learning Repository | [https://archive.ics.uci.edu/](https://archive.ics.uci.edu/) | 经典机器学习数据集，常见表格型数据 | 回归、分类、聚类、故障诊断、特征选择 |
+| Google Dataset Search | [https://datasetsearch.research.google.com/](https://datasetsearch.research.google.com/) | 跨网站检索公开数据集的搜索引擎 | 查找车辆、交通、能源、电池、传感器等领域数据 |
+| Hugging Face Datasets | [https://huggingface.co/datasets](https://huggingface.co/datasets) | AI和机器学习数据集，支持多种数据格式 | 自动驾驶感知、图像/视频识别、驾驶场景理解 |
+| Zenodo | [https://zenodo.org/](https://zenodo.org/) | 科研人员发布的数据、代码、补充材料，通常提供DOI | 查找论文配套数据、实验数据和可引用代码 |
+| Mendeley Data | [https://data.mendeley.com/](https://data.mendeley.com/) | 学术研究数据仓库，常与期刊论文关联 | 电池实验、车辆动力学、材料、交通与能源研究 |
+| Figshare | [https://figshare.com/](https://figshare.com/) | 高校、研究机构和作者发布的研究数据及补充材料 | 工程实验数据、仿真数据、车辆与交通研究 |
+| IEEE DataPort | [https://ieee-dataport.org/](https://ieee-dataport.org/) | 工程、电子、通信、传感器和智能交通数据 | 自动驾驶、车辆传感器、智能交通、控制系统 |
+| OpenML | [https://www.openml.org/](https://www.openml.org/) | 机器学习数据集、任务、模型和实验基准 | 算法比较、模型评估、分类与回归基准实验 |
+| Papers with Code | [https://paperswithcode.com/](https://paperswithcode.com/) | 将学术论文、代码、数据集和基准结果关联起来 | 根据研究任务查找论文、GitHub源码和常用数据集 |
+
+### 平台使用提示
+
+- **Kaggle**：适合快速找到可练习的数据和Notebook，但要检查数据是否有可靠的原始出处。
+- **UCI / OpenML**：适合传统机器学习实验和算法横向比较。
+- **Google Dataset Search**：用于发现数据集，不是数据托管平台；最终需要进入原始发布页面下载。
+- **Zenodo / Mendeley Data / Figshare**：适合追踪论文作者公开的原始数据、补充文件和代码。
+- **Papers with Code**：主要用于找论文和实现，不应将其误认为所有数据集的实际托管位置。
+- **IEEE DataPort**：部分资源可能需要注册、机构权限或付费访问。
+
+## 二、国内数据平台
+
+| 平台 | 官网 | 主要资源 | 适合的车辆工程研究方向 |
+|---|---|---|---|
+| 阿里云天池 | [https://tianchi.aliyun.com/](https://tianchi.aliyun.com/) | 数据科学竞赛、行业数据、算法实践 | 工业预测、能源分析、交通预测、设备故障诊断 |
+| 和鲸社区 | [https://www.heywhale.com/](https://www.heywhale.com/) | 数据集、Notebook、数据科学项目和学习资源 | 数据分析、机器学习、预测建模 |
+| DataFountain | [https://www.datafountain.cn/](https://www.datafountain.cn/) | 算法竞赛、行业数据和实践任务 | 智能交通、工业数据分析、预测与分类 |
+
+> 国内平台上的数据集开放范围和下载条件可能随项目变化。需要查看具体竞赛或数据集的规则，尤其注意是否允许将数据用于毕业论文或公开发表。
+
+## 三、车辆工程及相关专业数据门户
+
+### 1. 电池、新能源汽车与寿命预测
+
+| 平台 | 官网 | 主要资源 | 适合研究方向 |
+|---|---|---|---|
+| Battery Data Commons | [https://batterydatacommons.org/](https://batterydatacommons.org/) | 电池研究数据资源与相关数据集入口 | 电池充放电、老化、SOH估计、寿命预测、故障诊断 |
+| NASA Prognostics Center of Excellence（PCoE）数据仓库 | [https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/) | 设备退化、预测与健康管理数据；包含经典锂电池实验数据资源 | 电池容量衰减、剩余寿命预测、健康状态估计、故障诊断 |
+| NREL（美国国家可再生能源实验室） | [https://www.nrel.gov/](https://www.nrel.gov/) | 可再生能源、交通、车辆技术和能源相关数据与研究资源 | 电动汽车能耗、车辆使用特征、能源系统与充电研究 |
+
+### 2. 自动驾驶、车辆轨迹与道路场景
+
+| 平台 | 官网 | 主要资源 | 适合研究方向 |
+|---|---|---|---|
+| Waymo Open Dataset | [https://waymo.com/open/](https://waymo.com/open/) | 自动驾驶场景数据，包括传感器、目标和运动相关数据 | 目标检测、场景理解、运动预测、多车交互 |
+| Waymo Open Dataset GitHub | [https://github.com/waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) | 数据格式、工具和相关代码 | 数据读取、预处理、模型开发与复现 |
+| Argoverse | [https://www.argoverse.org/](https://www.argoverse.org/) | 自动驾驶数据、车辆轨迹、地图和运动预测资源 | 车辆轨迹预测、交互行为建模、道路场景理解 |
+
+### 3. 车辆能耗数据集补充入口
+
+| 数据集/资源 | 链接 | 主要内容 | 适合研究方向 |
+|---|---|---|---|
+| Vehicle Energy Dataset（VED） | [https://github.com/gsoh/VED](https://github.com/gsoh/VED) | 真实车辆行驶与能耗相关数据及配套资源 | 燃油/电能消耗预测、驾驶行为与能耗关系 |
+| Extended Vehicle Energy Dataset（eVED） | [https://github.com/zhangsl2013/eVED](https://github.com/zhangsl2013/eVED) | 在车辆能耗研究基础上扩展道路环境等信息的资源 | 道路环境、驾驶工况与车辆能耗的关联分析 |
+
+## 四、按研究主题快速选择数据来源
+
+| 研究主题 | 建议优先查看的平台/数据集 | 可考虑的研究任务 |
+|---|---|---|
+| 车辆能耗预测 | VED、eVED、Kaggle、NREL | 能耗回归预测、工况识别、影响因素分析 |
+| 动力电池SOH与寿命预测 | Battery Data Commons、NASA PCoE、Zenodo、Mendeley Data | SOH估计、RUL预测、容量衰减建模 |
+| 电池故障诊断 | Battery Data Commons、NASA PCoE、IEEE DataPort | 故障分类、异常检测、早期预警 |
+| 自动驾驶轨迹预测 | Waymo、Argoverse、Hugging Face | 未来轨迹预测、多车交互、场景分类 |
+| 交通流量预测 | Kaggle、UCI、OpenML、天池 | 交通流量/速度预测、时空建模 |
+| 驾驶行为识别 | Kaggle、Zenodo、IEEE DataPort | 急加速/急减速识别、驾驶风格分类 |
+| 车辆故障诊断 | UCI、Kaggle、Zenodo、Mendeley Data | 故障分类、状态监测、异常检测 |
+
+## 五、找数据集和论文源码的推荐流程
+
+1. **先明确研究问题**：例如“基于机器学习的动力电池SOH预测”，不要只用“汽车”作为搜索词。
+2. **搜索数据集**：先查专业数据门户，再用 Google Dataset Search、Kaggle、Zenodo、Mendeley Data 等扩展搜索。
+3. **追溯数据来源**：确认数据由谁采集、采集对象和实验条件是什么，是否有原始论文。
+4. **查找使用该数据集的论文**：使用 Google Scholar、Semantic Scholar 或 Papers with Code 检索数据集名称及研究任务。
+5. **查找源码**：优先选择作者官方GitHub仓库，确认是否提供数据预处理、训练、测试和评价代码。
+6. **检查可复现性**：核对依赖版本、数据路径、预训练权重、训练配置、评价指标和硬件要求。
+7. **设计自己的改进**：先复现基线，再从特征工程、模型结构、泛化能力、可解释性或计算效率等方面提出改进。
+
+## 六、下载和引用前必须检查的事项
+
+- **许可协议**：确认是否允许学术研究、再分发和商业使用；“公开可下载”不等于“没有使用限制”。
+- **论文引用**：优先引用数据集原始论文或数据集说明页提供的推荐引用格式；不要只引用下载平台。
+- **版本信息**：记录数据集版本、下载日期、文件清单和预处理过程。
+- **数据质量**：检查缺失值、异常值、样本数量、标签质量、采样频率和数据分布。
+- **训练/测试划分**：避免同一车辆、同一电池或相邻时间窗口的数据同时进入训练集和测试集，造成数据泄漏。
+- **数据与源码对应关系**：确认论文使用的确实是当前下载的数据版本，不能仅凭项目名称相似就认为完全一致。
+- **隐私与安全**：车辆轨迹、定位和驾驶记录可能包含敏感信息，遵守数据集使用条款。
+
+## 七、建议收藏的核心网址
+
+如果只想先收藏最常用的入口，建议优先保存：
+
+1. [Kaggle Datasets](https://www.kaggle.com/datasets) —— 综合数据集与实践案例
+2. [Google Dataset Search](https://datasetsearch.research.google.com/) —— 跨平台找数据
+3. [Papers with Code](https://paperswithcode.com/) —— 找论文、源码和基准
+4. [Zenodo](https://zenodo.org/) —— 找论文配套数据和代码
+5. [Mendeley Data](https://data.mendeley.com/) —— 找学术研究数据
+6. [Battery Data Commons](https://batterydatacommons.org/) —— 电池方向
+7. [NASA PCoE](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/) —— 电池退化与寿命预测
+8. [Waymo Open Dataset](https://waymo.com/open/) —— 自动驾驶
+9. [Argoverse](https://www.argoverse.org/) —— 自动驾驶轨迹与地图
+10. [VED](https://github.com/gsoh/VED) —— 车辆能耗研究
+
+---
+
+**使用建议：** 对车辆工程专业的数据科学论文，优先选择“有明确原始论文 + 有可下载数据 + 有官方源码 + 有清晰评价指标”的研究对象。先确保数据和代码能跑通，再确定创新点和论文题目。
