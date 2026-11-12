@@ -63,8 +63,8 @@ for path in sorted(source.rglob("*")):
         continue
     if path.is_symlink() or getattr(path, "is_junction", lambda: False)() or not path.resolve().is_relative_to(source):
         continue
-    if path.is_dir() and len(relative.parts) == 1:
-        folders.append(relative.name)
+    if path.is_dir():
+        folders.append(relative.as_posix())
     if not path.is_file():
         continue
     group = "other"
