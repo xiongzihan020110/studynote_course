@@ -18,19 +18,28 @@
 window.addEventListener("DOMContentLoaded",()=>{
  const groups=[["python","MCST1023","数据科学与编程（Python）"],["writing","MCST1043","写作分析"],["statistics","MCST1063","统计学"],["other","其他笔记","欢迎、备忘录与模板"]], files=[{"id":11,"group":"python","title":"0 jupyter使用注意事项.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/0%20jupyter%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.md"},{"id":12,"group":"python","title":"1 第一章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1%20%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":13,"group":"python","title":"1.1 作业一.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1.1%20%E4%BD%9C%E4%B8%9A%E4%B8%80.md"},{"id":14,"group":"python","title":"2 第二章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/2%20%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":18,"group":"other","title":"0 课堂信息.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1033%20%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/0%20%E8%AF%BE%E5%A0%82%E4%BF%A1%E6%81%AF.md"},{"id":19,"group":"other","title":"Pasted image 20261112142700.png","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1033%20%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/%E9%99%84%E4%BB%B6/Pasted%20image%2020261112142700.png"},{"id":15,"group":"writing","title":"0 第五周课程记录.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1043%20%E5%86%99%E4%BD%9C%E5%88%86%E6%9E%90/0%20%E7%AC%AC%E4%BA%94%E5%91%A8%E8%AF%BE%E7%A8%8B%E8%AE%B0%E5%BD%95.md"},{"id":16,"group":"statistics","title":"0 第二次作业.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1063%20%E7%BB%9F%E8%AE%A1%E5%AD%A6/0%20%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A.md"},{"id":20,"group":"other","title":"待更新.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/%E5%85%B6%E5%AE%83%E5%BE%85%E6%9B%B4%E6%96%B0/%E5%BE%85%E6%9B%B4%E6%96%B0.md"}], prefix="./", course="./python/";
  const get=id=>document.getElementById(id);
+ const syncedFolders=["1023 数据科学与编程（Python）","1033 大数据管理","1043 写作分析","1063 统计学","其它待更新"];
  const filters=get("course-filters");
+ const folderGroups=new Map();
+ const courseKeys={"1023":"python","1043":"writing","1063":"statistics"};
+ groups.length=0;
+ filters.replaceChildren();
+ for(const folder of syncedFolders){
+  const numbered=folder.match(/^(\d{4})(?:\s+(.+))?$/);
+  const knownKey=numbered&&courseKeys[numbered[1]];
+  const key=knownKey&&!groups.some(([id])=>id===knownKey)?knownKey:"folder-"+encodeURIComponent(folder);
+  folderGroups.set(folder,key);
+  groups.push([key,numbered?"MCST"+numbered[1]:folder,numbered?.[2]??""]);
+ }
  for(const file of files){
   const [,folder,...rest]=decodeURIComponent(file.path).split("/");
-  if(!rest.length||file.group!=="other")continue;
-  const key="folder-"+encodeURIComponent(folder);
-  file.group=key;
-  if(groups.some(([id])=>id===key))continue;
-  const numbered=folder.match(/^(\d{4})\s+(.+)$/);
-  const label=numbered?"MCST"+numbered[1]:folder;
-  groups.splice(groups.length-1,0,[key,label,numbered?numbered[2]:""]);
+  file.group=rest.length?folderGroups.get(folder)??"other":"other";
+ }
+ groups.push(["other","其他笔记",""]);
+ for(const [key,label] of groups){
   const link=document.createElement("a");
   link.href="#course-"+key;link.dataset.group=key;link.textContent=label;
-  filters.insertBefore(link,filters.querySelector('[data-group="other"]'));
+  filters.append(link);
  }
  let revision=0;
  function makeLink(parent,href,title,selected=false){
