@@ -53,7 +53,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-sp
 
 .note-pager{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
 .note-pager[hidden],.note-pager>[hidden]{display:none}.note-pager>*{display:block;text-align:center;padding:8px 6px;border:1px solid var(--line);border-radius:8px;font-size:.95rem}
-.note-pager a{text-decoration:none}.note-pager a:hover{background:#242e55}.note-pager [aria-disabled]{opacity:.55}
+.note-pager a{min-width:0;overflow-wrap:anywhere;text-decoration:none}.note-pager a:hover{background:#242e55}.note-pager [aria-disabled]{opacity:.55}
 </style><link rel="stylesheet" href="../avatar.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap">
 <link rel="stylesheet" href="../home-cover.css"><link rel="stylesheet" href="../folder-cover-seed.css"></head>
 <body class="home"><header class="topbar"><a class="brand" href="#"><span class="brand-mark brand-avatar" aria-hidden="true"></span>xizh</a><a class="gold-action" id="top-contact" href="mailto:xzh210858572@163.com">xzh210858572@163.com</a></header>
@@ -175,7 +175,8 @@ window.addEventListener("DOMContentLoaded",()=>{
   const position=notes.indexOf(note);
   function neighbor(file,label){
    if(file){
-    link(pager,"#note-"+file.id,label).title=file.title;
+    const caption=label.startsWith("←")?"← "+file.title:file.title+" →";
+    link(pager,"#note-"+file.id,caption).title=file.title;
    }else{
     const unavailable=document.createElement("span");
     unavailable.textContent=label;unavailable.setAttribute("aria-disabled","true");pager.append(unavailable);
