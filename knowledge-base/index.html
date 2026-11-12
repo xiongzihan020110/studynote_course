@@ -1,53 +1,46 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小熊同学的知识库</title>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小熊同学的知识库</title>
 <style>
-:root{--bg:#19212e;--ink:#f5f1e9;--muted:#b7c0cc;--line:#394554;--blue:#f5ae35;--white:#222c3a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,"Microsoft YaHei",system-ui,sans-serif}main{max-width:1260px;padding:42px 24px 60px;margin:auto}header{text-align:center;margin:0 0 34px}h1{font-size:clamp(29px,4vw,46px);letter-spacing:-.025em;line-height:1.2;margin:4px 0 12px}header p{color:var(--muted);margin:0}.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:13px 0}.filters a,.category{padding:7px 17px;border:1px solid var(--line);border-radius:999px;background:#273240;text-decoration:none;color:var(--ink);white-space:nowrap}.category{background:var(--blue);color:white;border-color:var(--blue);font-weight:700;padding:9px 22px}.filters a[aria-current]{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}.heading{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:40px 0 12px;border-bottom:1px solid var(--line);padding:0 0 10px}.heading h2{margin:0;font-size:25px}.heading span{color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(175px,245px);gap:19px;align-items:start}.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:clamp(15px,3vw,28px);min-width:0}.panel h2{margin-top:0}.cards a,.files a{display:block;color:var(--ink);text-decoration:none;padding:9px 11px;border-radius:8px}.cards a{border:1px solid var(--line);margin:9px 0}.files a{font-size:14px;padding:5px 8px}.files strong{display:block;padding:0 8px 5px;color:var(--muted)}.cards a:hover,.files a:hover,.files a[aria-current]{background:#382e22;color:#ffc365}a{color:#ffc365}a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}#content{overflow-wrap:anywhere}pre,table{display:block;overflow:auto;max-width:100%}pre{padding:12px;background:#111925;border-radius:8px}td,th{padding:6px 9px;border:1px solid var(--line)}table{border-collapse:collapse}img{max-width:100%}[hidden]{display:none!important}@media(max-width:700px){main{padding:22px 13px 40px}.layout{grid-template-columns:1fr}.files{grid-row:1}.heading{margin-top:24px}.filters{gap:6px}.filters a{padding:5px 10px}}
-
-:root{color-scheme:dark;--accent-ink:#21180b}
-.category,.filters a[aria-current],.tabs a[aria-current=page]{color:var(--accent-ink);background:#f5ae35;border-color:#f5ae35}
-.hero{border:1px solid var(--line)}
-::selection{background:#f5ae35;color:var(--accent-ink)}
-#content img{max-width:100%;height:auto}
-</style></head><body><main>
-<header><h1>小熊同学的知识库</h1><p>UTM 课程笔记与学习资料</p></header>
-<div class="filters"><span class="category">数据科学课程</span></div>
-<nav id="course-filters" class="filters" aria-label="按课程筛选"><a href="#course-python" data-group="python">MCST1023</a><a href="#course-writing" data-group="writing">MCST1043</a><a href="#course-statistics" data-group="statistics">MCST1063</a><a href="#course-other" data-group="other">其他笔记</a></nav>
-<div class="heading"><h2 id="code">MCST1023</h2><span id="name">数据科学与编程（Python）</span></div>
-<div class="layout"><article class="panel"><div id="cards" class="cards"></div><a id="download" hidden download>下载 Markdown</a><div id="content"></div></article><nav class="files" id="files" aria-label="文件列表"></nav></div>
-</main><script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.3.3/dist/purify.min.js"></script>
+:root{color-scheme:light;--bg:#f0f1f5;--paper:#fff;--ink:#232831;--muted:#586374;--line:#dce0e8;--accent:#841d46}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,"Microsoft YaHei",system-ui,sans-serif}
+a{color:var(--accent)}a:focus-visible,input:focus-visible{outline:3px solid #a54970;outline-offset:3px}
+.topbar{background:var(--paper);border-bottom:1px solid var(--line);padding:0 clamp(20px,5vw,76px);min-height:68px;display:flex;align-items:center}
+.brand{display:inline-flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font-weight:700}
+.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--accent);color:white;font-size:17px}
+main{width:min(1460px,100%);margin:auto;padding:clamp(24px,5vw,64px) clamp(16px,4vw,54px) 64px}
+h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,4vw,46px);line-height:1.25;letter-spacing:-.035em}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:15px;color:var(--muted);font-size:.92rem}
+.crumbs a{text-decoration:none}.crumbs a:hover{text-decoration:underline}
+.overview{margin-top:32px;background:var(--paper);padding:clamp(17px,3vw,34px);border:1px solid var(--line);border-radius:14px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.section-head h2{font-size:1.3rem}.search{width:min(100%,410px);border:1px solid #aab2bf;border-radius:8px;background:#f7f8fb;font:inherit;color:inherit;padding:8px 13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.folder-card{display:flex;flex-direction:column;overflow:hidden;min-width:0;border:1px solid var(--line);border-radius:10px;background:#f7f8fb;color:inherit;text-decoration:none;transition:box-shadow .16s,border-color .16s}
+.folder-card:hover{border-color:#b87e96;box-shadow:0 5px 14px #28263c17}
+.cover{height:clamp(76px,10vw,140px);background-color:var(--tile,#c6cee4);background-image:repeating-conic-gradient(#ffffff28 0 25%,#10164013 0 50%);background-size:64px 64px}
+.folder-card:nth-child(6n+2) .cover{--tile:#ada4eb;background-image:repeating-linear-gradient(45deg,#ffffff25 0 18px,transparent 18px 38px),repeating-linear-gradient(-45deg,#34256818 0 19px,transparent 19px 40px)}
+.folder-card:nth-child(6n+3) .cover{--tile:#a0a0e2}.folder-card:nth-child(6n+4) .cover{--tile:#accbc5}.folder-card:nth-child(6n+5) .cover{--tile:#ddbbca}.folder-card:nth-child(6n+6) .cover{--tile:#edc8a2}
+.card-body{padding:15px 17px;overflow-wrap:anywhere}.card-title{font-size:1.05rem;font-weight:700;color:var(--accent)}.count,.empty{color:var(--muted);font-size:.9rem}.count{margin-top:5px}
+.entries{display:grid;gap:1px;margin:20px 0 0;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--line)}
+.entries:empty{display:none}.row{display:block;background:var(--paper);padding:11px 14px;text-decoration:none;overflow-wrap:anywhere}.row:hover{background:#f8f0f4}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,260px);gap:20px;align-items:start}.workspace.single{display:block}
+.side{border:1px solid var(--line);border-radius:9px;padding:15px;overflow-wrap:anywhere}.side h3{font-size:1rem;margin-bottom:6px}.side a{display:block;padding:6px 0}
+.reader{min-width:0;overflow-wrap:anywhere}.reader img{max-width:100%;height:auto}.reader pre{overflow:auto;padding:14px;border-radius:7px;background:#f1f3f7}.reader table{display:block;overflow:auto;border-collapse:collapse}.reader th,.reader td{padding:6px 10px;border:1px solid var(--line)}.reader h2,.reader h3{margin:1em 0 .4em}.reader p{margin:.75em 0}.download{display:inline-block;margin-bottom:8px}
+[hidden]{display:none!important}@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:1fr}}
+@media(max-width:540px){.grid{grid-template-columns:1fr}.section-head{align-items:stretch;flex-direction:column}.search{width:100%}}
+</style></head>
+<body><header class="topbar"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">熊</span>小熊同学的知识库</a></header>
+<main><nav id="crumbs" class="crumbs" aria-label="当前位置" hidden></nav><h1 id="title">欢迎来到小熊同学的知识库</h1>
+<section class="overview"><div class="section-head" id="section-head"><h2 id="section-title">文件夹</h2><input class="search" id="search" type="search" aria-label="搜索文件夹" placeholder="搜索文件夹"></div>
+<div class="workspace single" id="workspace"><div><div class="grid" id="folders"></div><div class="entries" id="entries"></div><p class="empty" id="empty" hidden></p><a class="download" id="download" hidden download></a><article class="reader" id="content"></article></div><aside class="side" id="attachments" hidden></aside></div>
+</section></main>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.3.3/dist/purify.min.js"></script>
 <script>
 
 window.addEventListener("DOMContentLoaded",()=>{
- const groups=[["python","MCST1023","数据科学与编程（Python）"],["writing","MCST1043","写作分析"],["statistics","MCST1063","统计学"],["other","其他笔记","欢迎、备忘录与模板"]], files=[{"id":11,"group":"python","title":"0 jupyter使用注意事项.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/0%20jupyter%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.md"},{"id":12,"group":"python","title":"1 第一章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1%20%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":13,"group":"python","title":"1.1 作业一.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1.1%20%E4%BD%9C%E4%B8%9A%E4%B8%80.md"},{"id":14,"group":"python","title":"2 第二章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/2%20%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":20,"group":"other","title":"1 MapReduce_完整知识笔记与英文逐句翻译.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1033%20%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/1%20MapReduce_%E5%AE%8C%E6%95%B4%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0%E4%B8%8E%E8%8B%B1%E6%96%87%E9%80%90%E5%8F%A5%E7%BF%BB%E8%AF%91.md"},{"id":15,"group":"writing","title":"0 第五周课程记录.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1043%20%E5%86%99%E4%BD%9C%E5%88%86%E6%9E%90/0%20%E7%AC%AC%E4%BA%94%E5%91%A8%E8%AF%BE%E7%A8%8B%E8%AE%B0%E5%BD%95.md"},{"id":16,"group":"statistics","title":"0 第二次作业.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1063%20%E7%BB%9F%E8%AE%A1%E5%AD%A6/0%20%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A.md"},{"id":23,"group":"other","title":"脑洞部长52天第一天.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0/%E8%84%91%E6%B4%9E%E9%83%A8%E9%95%BF52%E5%A4%A9%E7%AC%AC%E4%B8%80%E5%A4%A9.md"},{"id":22,"group":"other","title":"公开数据集平台网址汇总.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3/%E5%85%AC%E5%BC%80%E6%95%B0%E6%8D%AE%E9%9B%86%E5%B9%B3%E5%8F%B0%E7%BD%91%E5%9D%80%E6%B1%87%E6%80%BB.md"}], prefix="./", course="./python/";
- const get=id=>document.getElementById(id);
+ const files=[{"id":11,"group":"python","title":"0 jupyter使用注意事项.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/0%20jupyter%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.md"},{"id":12,"group":"python","title":"1 第一章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1%20%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":13,"group":"python","title":"1.1 作业一.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/1.1%20%E4%BD%9C%E4%B8%9A%E4%B8%80.md"},{"id":14,"group":"python","title":"2 第二章 零基础讲解.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1023%20%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%8E%E7%BC%96%E7%A8%8B%EF%BC%88Python%EF%BC%89/2%20%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3.md"},{"id":20,"group":"other","title":"1 MapReduce_完整知识笔记与英文逐句翻译.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1033%20%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/1%20MapReduce_%E5%AE%8C%E6%95%B4%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0%E4%B8%8E%E8%8B%B1%E6%96%87%E9%80%90%E5%8F%A5%E7%BF%BB%E8%AF%91.md"},{"id":15,"group":"writing","title":"0 第五周课程记录.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1043%20%E5%86%99%E4%BD%9C%E5%88%86%E6%9E%90/0%20%E7%AC%AC%E4%BA%94%E5%91%A8%E8%AF%BE%E7%A8%8B%E8%AE%B0%E5%BD%95.md"},{"id":16,"group":"statistics","title":"0 第二次作业.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/1063%20%E7%BB%9F%E8%AE%A1%E5%AD%A6/0%20%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A.md"},{"id":23,"group":"other","title":"脑洞部长52天第一天.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0/%E8%84%91%E6%B4%9E%E9%83%A8%E9%95%BF52%E5%A4%A9%E7%AC%AC%E4%B8%80%E5%A4%A9.md"},{"id":22,"group":"other","title":"公开数据集平台网址汇总.md","path":"%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E7%A1%95%E5%A3%AB/%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3/%E5%85%AC%E5%BC%80%E6%95%B0%E6%8D%AE%E9%9B%86%E5%B9%B3%E5%8F%B0%E7%BD%91%E5%9D%80%E6%B1%87%E6%80%BB.md"}], prefix="./", course="./python/";
  const syncedFolders=["1023 数据科学与编程（Python）","1033 大数据管理","1043 写作分析","1063 统计学","英语学习","论文相关"];
- const filters=get("course-filters");
- const folderGroups=new Map();
- const courseKeys={"1023":"python","1043":"writing","1063":"statistics"};
- groups.length=0;
- filters.replaceChildren();
- for(const folder of syncedFolders){
-  const numbered=folder.match(/^(\d{4})(?:\s+(.+))?$/);
-  const knownKey=numbered&&courseKeys[numbered[1]];
-  const key=knownKey&&!groups.some(([id])=>id===knownKey)?knownKey:"folder-"+encodeURIComponent(folder);
-  folderGroups.set(folder,key);
-  groups.push([key,numbered?"MCST"+numbered[1]:folder,numbered?.[2]??""]);
- }
- for(const file of files){
-  const [,folder,...rest]=decodeURIComponent(file.path).split("/");
-  file.group=rest.length?folderGroups.get(folder)??"other":"other";
- }
- groups.push(["other","其他笔记",""]);
- for(const [key,label] of groups){
-  const link=document.createElement("a");
-  link.href="#course-"+key;link.dataset.group=key;link.textContent=label;
-  filters.append(link);
- }
- let revision=0;
- function makeLink(parent,href,title,selected=false){
-  const link=document.createElement("a");link.href=href;link.textContent=title;
-  if(selected)link.setAttribute("aria-current","true");
-  parent.append(link);
- }
  const imagePath=/\.(?:png|jpe?g|gif|webp|avif|svg|bmp|ico)$/i;
  function renderMarkdown(markdown,note){
   const notePath=decodeURIComponent(note.path);
@@ -83,54 +76,142 @@ window.addEventListener("DOMContentLoaded",()=>{
   }
   return fragment;
  }
+
+
+ const homeTitle="欢迎来到小熊同学的知识库";
+ const get=id=>document.getElementById(id);
+ const folders=new Set();
+ function addFolder(path){
+  while(path&&!folders.has(path)){
+   folders.add(path);
+   path=parentOf(path);
+  }
+ }
+ function parentOf(path){return path.slice(0,Math.max(0,path.lastIndexOf("/")));}
+ function folderUrl(path){return path?"#folder/"+path.split("/").map(encodeURIComponent).join("/"):"#";}
+ for(const path of syncedFolders)addFolder(path);
+ for(const file of files){
+  file.relative=decodeURIComponent(file.path).split("/").slice(1).join("/");
+  file.folder=parentOf(file.relative);
+  addFolder(file.folder);
+ }
+ const sortNames=(a,b)=>a.localeCompare(b,"zh-CN",{numeric:true});
+ const courseAliases={"python":"1023","writing":"1043","statistics":"1063"};
+ const isAttachment=file=>!/\.md$/i.test(file.relative)||file.folder.split("/").includes("附件");
+ function link(parent,href,label,className){
+  const item=document.createElement("a");
+  item.href=href;item.textContent=label;if(className)item.className=className;
+  parent.append(item);return item;
+ }
+ function heading(parent,label){
+  const item=document.createElement("h3");item.textContent=label;parent.append(item);
+ }
+ function breadcrumbs(path,note){
+  const nav=get("crumbs");nav.replaceChildren();
+  link(nav,"#","知识库首页");
+  let current="";
+  for(const part of path.split("/").filter(Boolean)){
+   nav.append(" / ");
+   current=current?current+"/"+part:part;
+   link(nav,folderUrl(current),part);
+  }
+  if(note)nav.append(" / "+note.title);
+ }
+ function folderCards(path,query=""){
+  const grid=get("folders");grid.replaceChildren();
+  const children=[...folders].filter(child=>parentOf(child)===path).sort(sortNames);
+  for(const child of children){
+   const name=child.split("/").at(-1);
+   const label=name.replace(/^(\d{4})(?=\s|$)/,"MCST$1");
+   if(query&&!label.toLowerCase().includes(query)&&!name.toLowerCase().includes(query))continue;
+   const count=files.filter(file=>file.relative.startsWith(child+"/")&&!isAttachment(file)).length;
+   const card=link(grid,folderUrl(child),"","folder-card");
+   const cover=document.createElement("div");cover.className="cover";cover.setAttribute("aria-hidden","true");
+   const body=document.createElement("div");body.className="card-body";
+   const title=document.createElement("div");title.className="card-title";title.textContent=label;
+   const meta=document.createElement("div");meta.className="count";meta.textContent=count+" 份笔记";
+   body.append(title,meta);card.append(cover,body);
+  }
+  return grid.childElementCount;
+ }
+ let revision=0;
  async function render(){
   const current=++revision;
-  const note=files.find(file=>location.hash==="#note-"+file.id);
-  const group=groups.find(([key])=>key===(note?.group??location.hash.slice(8)))??groups[0];
-  const [key,code,name]=group;
-  get("code").textContent=code;get("name").textContent=name;
-  for(const link of document.querySelectorAll("[data-group]")){
-   if(link.dataset.group===key)link.setAttribute("aria-current","true");else link.removeAttribute("aria-current");
-  }
-  const cards=get("cards"), list=get("files"), content=get("content"), download=get("download");
-  cards.replaceChildren();list.replaceChildren();content.replaceChildren();
-  const label=document.createElement("strong");label.textContent="文件列表";list.append(label);
-  cards.hidden=Boolean(note);download.hidden=!note;
-  if(key==="python"){makeLink(cards,course,"Python 第二章 · 课程笔记");makeLink(list,course,"Python 第二章 · 课程笔记");}
-  const attachments=[];
-  for(const file of files.filter(item=>item.group===key)){
-   const path=decodeURIComponent(file.path);
-   if(!/\.md$/i.test(path)||path.split("/").slice(0,-1).includes("附件")){
-    attachments.push(file);continue;
+  const hash=location.hash;
+  const note=files.find(file=>hash==="#note-"+file.id);
+  let path=note?.folder??"";
+  if(hash.startsWith("#folder/")){
+   try{path=decodeURIComponent(hash.slice(8));}catch{path="";}
+  }else if(hash.startsWith("#course-")){
+   const legacy=hash.slice(8);
+   if(legacy.startsWith("folder-")){
+    try{path=decodeURIComponent(legacy.slice(7));}catch{path="";}
+   }else if(courseAliases[legacy]){
+    path=[...folders].find(folder=>folder.startsWith(courseAliases[legacy]+" "))??"";
    }
-   const url="#note-"+file.id;makeLink(cards,url,file.title);makeLink(list,url,file.title,file===note);
   }
+  if(!folders.has(path))path="";
+  const isHome=!note&&!path;
+  get("crumbs").hidden=isHome;
+  if(!isHome)breadcrumbs(path,note);
+  get("title").textContent=note?.title??(path?path.split("/").at(-1):homeTitle);
+  get("section-head").hidden=Boolean(note);
+  get("section-title").textContent=isHome?"文件夹":"目录";
+  get("search").hidden=!isHome;
+  get("search").value="";
+  get("folders").hidden=Boolean(note);
+  const list=get("entries"),side=get("attachments"),reader=get("content"),download=get("download");
+  list.replaceChildren();side.replaceChildren();reader.replaceChildren();
+  download.hidden=!note;
+  const direct=files.filter(file=>file.folder===path);
+  const attachments=files.filter(file=>isAttachment(file)&&(file.folder===path||
+   (path?file.folder.startsWith(path+"/"):false)&&file.folder.slice(path.length+1).split("/")[0]==="附件"));
+  side.hidden=!attachments.length;
+  get("workspace").classList.toggle("single",!attachments.length);
   if(attachments.length){
-   const heading=document.createElement("strong");
-   heading.textContent="附件下载";list.append(heading);
+   heading(side,"附件下载");
    for(const file of attachments){
-    const link=document.createElement("a");
-    link.href=prefix+file.path;link.download=file.title;link.textContent=file.title;
-    list.append(link);
+    const item=link(side,prefix+file.path,file.title);
+    item.download=file.title;
    }
   }
-  if(!note)return;
-  download.href=prefix+note.path;
-  const isMarkdown=/\.md$/i.test(note.path);
-  download.textContent=isMarkdown?"下载 Markdown":"下载文件";
-  if(!isMarkdown){
-   if(imagePath.test(note.path)){
-    const img=document.createElement("img");img.src=download.href;img.alt=note.title;content.append(img);
-   }else content.textContent="点击上方链接下载文件。";
+  get("empty").hidden=true;
+  if(!note){
+   const count=folderCards(path);
+   for(const file of direct.filter(file=>!isAttachment(file)).sort((a,b)=>sortNames(a.title,b.title))){
+    link(list,"#note-"+file.id,file.title,"row");
+   }
+   if(path.startsWith("1023 ")&&parentOf(path)===""&&direct.some(file=>/^2 第二章/.test(file.title))){
+    link(list,course,"Python 第二章 · 课程笔记","row");
+   }
+   if(!count&&!list.childElementCount&&!attachments.length){
+    get("empty").textContent="这个文件夹是空的。";get("empty").hidden=false;
+   }
    return;
   }
-  content.textContent="正在加载笔记…";
+  download.href=prefix+note.path;
+  download.textContent=isAttachment(note)?"下载文件":"下载 Markdown";
+  if(!/\.md$/i.test(note.path)){
+   if(imagePath.test(note.path)){
+    const image=document.createElement("img");image.src=download.href;image.alt=note.title;reader.append(image);
+   }
+   return;
+  }
+  reader.textContent="正在加载笔记…";
   try{
-   const response=await fetch(download.href, {cache: "no-cache"});if(!response.ok)throw Error();
+   const response=await fetch(download.href,{cache:"no-cache"});
+   if(!response.ok)throw Error();
    const markdown=await response.text();
-   if(current===revision)content.replaceChildren(renderMarkdown(markdown,note));
-  }catch{if(current===revision)content.textContent="笔记预览加载失败，可以下载 Markdown 原文。";}
+   if(current===revision)reader.replaceChildren(renderMarkdown(markdown,note));
+  }catch{
+   if(current===revision)reader.textContent="无法预览笔记，可以下载原文。";
+  }
  }
+ get("search").addEventListener("input",event=>{
+  const count=folderCards("",event.target.value.trim().toLowerCase());
+  get("empty").textContent="没有找到匹配的文件夹。";get("empty").hidden=Boolean(count);
+ });
  window.addEventListener("hashchange",render);render();
+
 });
 </script></body></html>
