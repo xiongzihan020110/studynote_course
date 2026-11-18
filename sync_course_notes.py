@@ -110,13 +110,20 @@ expected = set()
 changes = []
 for path in sorted(source.rglob("*")):
     relative = path.relative_to(source)
-    if any(part.startswith(".") for part in relative.parts):
+    marker = len(relative.parts) == 2 and relative.name == ".gitkeep" and not relative.parts[0].startswith(".")
+    if any(part.startswith(".") for part in relative.parts) and not marker:
         continue
     if path.is_symlink() or getattr(path, "is_junction", lambda: False)() or not path.resolve().is_relative_to(source):
         continue
     if path.is_dir() and len(relative.parts) == 1:
         folders.append(relative.as_posix())
     if not path.is_file():
+        continue
+    if marker:
+        target = dest / relative
+        expected.add(target)
+        if not target.is_file() or target.read_bytes() != path.read_bytes():
+            changes.append((path, target))
         continue
     group = "other"
     if len(relative.parts) > 1:
