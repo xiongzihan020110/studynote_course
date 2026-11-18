@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 from urllib.parse import quote, unquote
+from online_sync import apply_online
 
 parser = argparse.ArgumentParser()
 parser.add_argument("source", type=Path)
@@ -93,6 +94,8 @@ if not args.check:
     git("pull", "--ff-only", "origin", "main")
     if script.read_bytes() != running_version:
         raise SystemExit(subprocess.call([sys.executable, *sys.argv]))
+
+online_received = apply_online(repo, source, published_folder, check=args.check)
 
 home = pages[0].read_text(encoding="utf-8")
 match = pattern.search(home)
@@ -179,8 +182,10 @@ for original, target in changes:
     shutil.copyfile(original, target)
 for page, content in updates.items():
     page.write_text(content, encoding="utf-8", newline="\n")
-if changes or updates or stale or cover_updates or cover_stale:
+if changes or updates or stale or cover_updates or cover_stale or online_received:
     git("add", "-A", "--", "knowledge-base", "index.html")
+    if online_received:
+        git("add", "--", "online-changes.json")
     if cover_updates or cover_stale:
         git("add", "-A", "--", "assets/folder-covers")
     if repo / "python-chapter-2.md" in stale:
