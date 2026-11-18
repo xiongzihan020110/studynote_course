@@ -25,7 +25,7 @@ def apply_online(repo, source, published_folder, check=False):
         if not name.startswith(prefix):
             raise ValueError('Invalid online change path')
         relative = PurePosixPath(name[len(prefix):])
-        if relative.is_absolute() or not relative.parts or any(p.startswith('.') or ':' in p or '\\' in p for p in relative.parts):
+        if relative.is_absolute() or not relative.parts or any((p.startswith('.') and not (p == '.gitkeep' and len(relative.parts) == 2 and relative.parts[-1] == p)) or ':' in p or '\\' in p for p in relative.parts):
             raise ValueError('Invalid online change filename')
         local = source.joinpath(*relative.parts)
         remote = repo.joinpath(*PurePosixPath(name).parts)
