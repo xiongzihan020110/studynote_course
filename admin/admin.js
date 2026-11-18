@@ -1,4 +1,6 @@
 const repository='xiongzihan020110/studynote_course';
+const authKey='knowledge-admin-token:'+repository;
+const savedAuth={read(){try{return localStorage.getItem(authKey)||'';}catch{return '';}},save(value){try{localStorage.setItem(authKey,value);return true;}catch{return false;}},clear(){try{localStorage.removeItem(authKey);}catch{}}};
 const prefix='knowledge-base/马来西亚-数据科学硕士/';
 const $=id=>document.getElementById(id);
 const enc=new TextEncoder(),dec=new TextDecoder();
@@ -8,7 +10,7 @@ const decode=text=>Uint8Array.from(atob(text.replace(/\s/g,'')),c=>c.charCodeAt(
 async function api(path,body,method){
  const response=await fetch('https://api.github.com/repos/'+repository+path,{method:method||(body?'POST':'GET'),headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
  const result=await response.json();
- if(!response.ok)throw Error(response.status===401?'令牌无效或已过期':response.status===403?'GitHub 拒绝写入，请检查 Contents 权限或请求额度':result.message||'GitHub 请求失败');
+ if(!response.ok)throw Object.assign(Error(response.status===401?'令牌无效或已过期':response.status===403?'GitHub 拒绝写入，请检查 Contents 权限或请求额度':result.message||'GitHub 请求失败'),{status:response.status});
  return result;
 }
 async function blob(path){const entry=entries.find(e=>e.path===path);if(!entry)return null;const data=await api('/git/blobs/'+entry.sha);return decode(data.content);}
@@ -60,8 +62,16 @@ function draw(){
 }
 async function run(action){const buttons=[...document.querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);try{await action();}catch(e){$('status').textContent='未完成：'+e.message;if($('editor').open)$('edit-status').textContent=e.message;}finally{buttons.forEach(b=>b.disabled=false);}}
 function close(){if($('text').value!==original&&!confirm('放弃未保存的内容？'))return;$('editor').close();}
-$('connect').onclick=()=>run(async()=>{token=$('token').value.trim();$('token').value='';if(!token)throw Error('请输入访问令牌');await refresh();await loadStyle();$('manager').hidden=false;$('login').hidden=true;$('status').textContent='已连接，可编辑网站。';});
-$('logout').onclick=()=>{token='';location.reload();};$('up').onclick=()=>{folder=folder.split('/').filter(Boolean).slice(0,-1).join('/');if(folder)folder+='/';draw();};$('root').onclick=()=>{folder='';draw();};$('reload').onclick=()=>run(refresh);
+async function connectRemembered(value){
+ token=value;
+ try{await refresh();await loadStyle();}
+ catch(error){if(error.status===401){savedAuth.clear();token='';}throw error;}
+ const remembered=savedAuth.save(token);
+ $('manager').hidden=false;$('login').hidden=true;
+ $('status').textContent=remembered?'已连接，授权已保存在此浏览器。':'已连接；浏览器禁止保存授权，下次需要重新连接。';
+}
+$('connect').onclick=()=>run(async()=>{const value=$('token').value.trim();$('token').value='';if(!value)throw Error('请输入访问令牌');await connectRemembered(value);});
+$('logout').onclick=()=>{savedAuth.clear();token='';location.reload();};$('up').onclick=()=>{folder=folder.split('/').filter(Boolean).slice(0,-1).join('/');if(folder)folder+='/';draw();};$('root').onclick=()=>{folder='';draw();};$('reload').onclick=()=>run(refresh);
 $('new').onclick=()=>{editPath='';editSha=null;original='';$('filename').value='';$('filename').disabled=false;$('text').value='';$('edit-status').textContent='';$('editor').showModal();};$('close').onclick=close;$('editor').addEventListener('cancel',e=>{e.preventDefault();close();});
 $('save-note').onclick=()=>run(async()=>{let name=$('filename').value.trim();if(!name||/[\\/<>:"|?*]/.test(name))throw Error('请填写有效的文件名');if(!name.endsWith('.md'))name+='.md';await contentChange(editPath||prefix+folder+name,enc.encode($('text').value),editSha);original=$('text').value;$('editor').close();});
 $('upload').onclick=()=>$('file').click();$('file').onchange=()=>run(async()=>{for(const file of $('file').files){if(file.size>15*1024*1024)throw Error('单个文件请小于 15 MB');const path=prefix+folder+file.name;const old=entries.find(e=>e.path===path);if(old&&!confirm('覆盖 '+file.name+'？'))continue;await contentChange(path,new Uint8Array(await file.arrayBuffer()),old?.sha??null);}$('file').value='';});
@@ -79,3 +89,6 @@ $('style-form').onsubmit=e=>{e.preventDefault();run(async()=>{
  for(const page of ['index.html','knowledge-base/index.html']){let html=await read(page);if(!html.includes('admin-theme.css')){const p=page.startsWith('knowledge-base/')?'../':'./';html=html.replace('</head>','<link rel="stylesheet" href="'+p+'admin-theme.css"><script defer src="'+p+'admin-theme.js"></script></head>');}html=html.replace(/(const homeTitle=)"[^"\n]*";/,(_,a)=>a+escapeJSON(c.title)+';');changes[page]=html;}
  await commitFiles(changes,'Update website appearance from online management');style=c;$('hero').value='';$('avatar').value='';
  });};
+
+const rememberedToken=savedAuth.read();
+if(rememberedToken){$('status').textContent='正在使用已保存的授权连接…';run(()=>connectRemembered(rememberedToken));}
