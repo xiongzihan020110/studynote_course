@@ -39,22 +39,52 @@ function escapeJSON(value){return JSON.stringify(value).replace(/</g,'\\u003c');
 async function contentChange(path,data,baseline){
  if(!path.startsWith(prefix)||path.split('/').some(p=>p==='..'||(p.startsWith('.')&&!(p==='.gitkeep'&&path===prefix+path.slice(prefix.length).split('/')[0]+'/.gitkeep'))))throw Error('文件路径无效');
  if((entries.find(e=>e.path===path)?.sha??null)!==baseline)throw Error('该文件已发生变化，请重新打开');
- const pending={...queue};pending[path]={base:(Object.hasOwn(pending,path)?pending[path].base:baseline),deleted:data===null};
- const pages=['index.html','knowledge-base/index.html'];const changes={[path]:data};
- const remaining=entries.filter(e=>e.path.startsWith(prefix)&&e.path!==path).map(e=>e.path);if(data!==null)remaining.push(path);
+ await publishContent({[path]:data});
+}
+async function publishContent(changes,deletedLibrary=''){
+ const pending={...queue};
+ for(const [path,data] of Object.entries(changes)){
+  pending[path]={base:Object.hasOwn(pending,path)?pending[path].base:(entries.find(e=>e.path===path)?.sha??null),deleted:data===null};
+ }
+ if(deletedLibrary)pending[prefix+deletedLibrary+'/']={directory:true,deleted:true};
+ const remaining=new Set(entries.filter(e=>e.path.startsWith(prefix)).map(e=>e.path));
+ for(const [path,data]of Object.entries(changes)){if(data===null)remaining.delete(path);else remaining.add(path);}
+ const pages=['index.html','knowledge-base/index.html'];
  const first=await read(pages[0]);const match=first.match(/\bfiles=(\[.*?\]), prefix=/s);if(!match)throw Error('网站目录格式不兼容');
  const previous=JSON.parse(match[1]);const old=new Map(previous.map(f=>[decodeURIComponent(f.path),f]));let id=Math.max(0,...previous.map(f=>f.id))+1;
- const files=remaining.filter(p=>!p.endsWith('/.gitkeep')).sort().map(p=>old.get(p.slice('knowledge-base/'.length))??{id:id++,group:'other',title:p.split('/').at(-1),path:p.slice('knowledge-base/'.length).split('/').map(encodeURIComponent).join('/')});
- const folders=new Set();for(const p of remaining){let parts=p.slice(prefix.length).split('/');parts.pop();if(parts.length)folders.add(parts[0]);}
+ const files=[...remaining].filter(p=>!p.endsWith('/.gitkeep')).sort().map(p=>old.get(p.slice('knowledge-base/'.length))??{id:id++,group:'other',title:p.split('/').at(-1),path:p.slice('knowledge-base/'.length).split('/').map(encodeURIComponent).join('/')});
+ const folders=new Set();for(const p of remaining){const parts=p.slice(prefix.length).split('/');if(parts.length>1)folders.add(parts[0]);}
  for(const page of pages){let html=page===pages[0]?first:await read(page);html=html.replace(/(\bfiles=)(\[.*?\])(, prefix=)/s,(_,a,b,c)=>a+escapeJSON(files)+c).replace(/^( +const syncedFolders=)(\[.*\]);$/m,(_,a)=>a+escapeJSON([...folders].sort())+';');changes[page]=html;}
  changes['online-changes.json']=JSON.stringify(pending,null,2);
- await commitFiles(changes,'Update knowledge base content from online management');
+ await commitFiles(changes,'Update knowledge libraries and content');
 }
+async function deleteLibrary(name){
+ if(!confirm('删除知识库“'+name+'”及其全部笔记和附件？下次电脑同步也会接收删除。'))return;
+ const changes={};for(const e of entries)if(e.path.startsWith(prefix+name+'/'))changes[e.path]=null;
+ const covers=JSON.parse(await read('library-covers.json','{}'));delete covers[name];
+ await publishContent(changes,name);
+ await commitFiles({'library-covers.json':JSON.stringify(covers,null,2)},'Remove library cover');
+}
+async function saveLibraryCover(name,input){
+ const file=input.files[0];if(!file)return;
+ const bitmap=await createImageBitmap(file);
+ let data;
+ try{
+  if(bitmap.width<=bitmap.height)throw Error('请选择横版封面');
+  const canvas=document.createElement('canvas');canvas.width=720;canvas.height=280;
+  const ratio=Math.max(720/bitmap.width,280/bitmap.height);
+  canvas.getContext('2d').drawImage(bitmap,(720-bitmap.width*ratio)/2,(280-bitmap.height*ratio)/2,bitmap.width*ratio,bitmap.height*ratio);
+  data=canvas.toDataURL('image/webp',.85);
+ }finally{bitmap.close();}
+ const covers=JSON.parse(await read('library-covers.json','{}'));covers[name]=data;
+ await commitFiles({'library-covers.json':JSON.stringify(covers,null,2)},'Update library cover');
+}
+
 function draw(){
  $('path').textContent='知识库 / '+folder;const body=$('list');body.replaceChildren();const folders=new Set(),files=[];
  for(const e of entries){if(!e.path.startsWith(prefix+folder))continue;const rest=e.path.slice((prefix+folder).length);if(!rest)continue;if(rest.includes('/'))folders.add(rest.split('/')[0]);else if(rest!=='.gitkeep')files.push(e);}
  function row(name,action){const tr=document.createElement('tr'),td=document.createElement('td'),ops=document.createElement('td');td.append(name);tr.append(td,ops);body.append(tr);action(ops);}
- for(const name of [...folders].sort()){const b=document.createElement('button');b.className='name';b.textContent='📁 '+name;b.onclick=()=>{folder+=name+'/';draw();};row(b,()=>{});}
+ for(const name of [...folders].sort()){const b=document.createElement('button');b.className='name';b.textContent='📁 '+name;b.onclick=()=>{folder+=name+'/';draw();};row(b,ops=>{if(!folder){const cover=document.createElement('button');cover.textContent='修改封面';cover.onclick=()=>{coverLibrary=name;$('library-cover').click();};const del=document.createElement('button');del.textContent='删除知识库';del.onclick=()=>run(()=>deleteLibrary(name));ops.append(cover,del);}});}
  for(const f of files.sort((a,b)=>a.path.localeCompare(b.path,'zh-CN',{numeric:true}))){const label=document.createElement('span');label.textContent=f.path.split('/').at(-1);row(label,ops=>{
   if(/\.md$/i.test(f.path)){const b=document.createElement('button');b.textContent='编辑';b.onclick=()=>run(async()=>{editPath=f.path;editSha=f.sha;original=await read(f.path);$('text').value=original;$('filename').value=label.textContent;$('filename').disabled=true;$('edit-status').textContent='';$('editor').showModal();});ops.append(b);}
   const del=document.createElement('button');del.textContent='删除';del.onclick=()=>run(async()=>{if(confirm('从网站删除 '+label.textContent+'？下次电脑同步也会接收此删除。'))await contentChange(f.path,null,f.sha);});ops.append(del);
@@ -72,13 +102,18 @@ async function connectRemembered(value){
 }
 $('connect').onclick=()=>run(async()=>{const value=$('token').value.trim();$('token').value='';if(!value)throw Error('请输入访问令牌');await connectRemembered(value);});
 $('logout').onclick=()=>{savedAuth.clear();token='';location.reload();};$('up').onclick=()=>{folder=folder.split('/').filter(Boolean).slice(0,-1).join('/');if(folder)folder+='/';draw();};$('root').onclick=()=>{folder='';draw();};$('reload').onclick=()=>run(refresh);
-$('new-library').onclick=()=>run(async()=>{
- const answer=prompt('新建知识库名称（将显示在首页）：');
- if(answer===null)return;
- const name=answer.trim();
+let coverLibrary='';
+$('library-cover').onchange=()=>run(async()=>{await saveLibraryCover(coverLibrary,$('library-cover'));$('library-cover').value='';});
+$('new-library').onclick=()=>{$('library-name').value='';$('new-library-cover').value='';$('library-dialog').showModal();};
+$('cancel-library').onclick=()=>$('library-dialog').close();
+$('create-library').onclick=()=>run(async()=>{
+ const name=$('library-name').value.trim();
  if(!name||name.length>100||/[\\\\/<>:"|?*\x00-\x1f]/.test(name)||name.startsWith('.')||/[. ]$/.test(name)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name))throw Error('请输入有效的知识库名称，不要包含斜杠或特殊字符');
  if(entries.some(e=>e.path.toLowerCase().startsWith((prefix+name+'/').toLowerCase())))throw Error('已有同名知识库');
+ if($('new-library-cover').files[0]){const bitmap=await createImageBitmap($('new-library-cover').files[0]);const valid=bitmap.width>bitmap.height;bitmap.close();if(!valid)throw Error('请选择横版封面');}
  await contentChange(prefix+name+'/.gitkeep',enc.encode(''),null);
+ $('library-dialog').close();
+ await saveLibraryCover(name,$('new-library-cover'));
  folder=name+'/';draw();
 });
 $('new').onclick=()=>{editPath='';editSha=null;original='';$('filename').value='';$('filename').disabled=false;$('text').value='';$('edit-status').textContent='';$('editor').showModal();};$('close').onclick=close;$('editor').addEventListener('cancel',e=>{e.preventDefault();close();});
@@ -101,3 +136,4 @@ $('style-form').onsubmit=e=>{e.preventDefault();run(async()=>{
 
 const rememberedToken=savedAuth.read();
 if(rememberedToken){$('status').textContent='正在使用已保存的授权连接…';run(()=>connectRemembered(rememberedToken));}
+

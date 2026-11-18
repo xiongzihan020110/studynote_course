@@ -9,7 +9,6 @@ import shutil
 import subprocess
 import sys
 from urllib.parse import quote, unquote
-from online_sync import apply_online
 
 parser = argparse.ArgumentParser()
 parser.add_argument("source", type=Path)
@@ -95,6 +94,7 @@ if not args.check:
     if script.read_bytes() != running_version:
         raise SystemExit(subprocess.call([sys.executable, *sys.argv]))
 
+from online_sync import apply_online
 online_received = apply_online(repo, source, published_folder, check=args.check)
 
 home = pages[0].read_text(encoding="utf-8")
@@ -201,3 +201,4 @@ if changes or updates or stale or cover_updates or cover_stale or online_receive
         git("commit", "-m", "Sync public course notes")
 if git("rev-list", "--count", "origin/main..HEAD") != "0":
     git("push", "origin", "HEAD:main")
+

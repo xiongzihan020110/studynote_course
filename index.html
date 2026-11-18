@@ -115,6 +115,7 @@ window.addEventListener("DOMContentLoaded",()=>{
  }
 
 
+ let libraryCovers={};
  const homeTitle="欢迎来到Xizh的知识库";
  const get=id=>document.getElementById(id);
  const folders=new Set();
@@ -164,8 +165,8 @@ window.addEventListener("DOMContentLoaded",()=>{
    const count=files.filter(file=>file.folder===child&&!isAttachment(file)).length;
    const card=link(grid,folderUrl(child),"","folder-card");
    const cover=document.createElement("div");cover.className="cover";cover.dataset.folder=child;cover.setAttribute("aria-hidden","true");
-   if(folderCovers[child]){
-    const image=document.createElement("img");image.alt="";image.loading="lazy";image.src="./assets/folder-covers/"+encodeURIComponent(folderCovers[child]);cover.append(image);
+   if(libraryCovers[child]||folderCovers[child]){
+    const image=document.createElement("img");image.alt="";image.loading="lazy";image.src=libraryCovers[child]||("./assets/folder-covers/"+encodeURIComponent(folderCovers[child]));cover.append(image);
    }
    const body=document.createElement("div");body.className="card-body";
    const title=document.createElement("div");title.className="card-title";title.textContent=label;
@@ -279,6 +280,8 @@ window.addEventListener("DOMContentLoaded",()=>{
   get("empty").textContent="没有找到匹配结果。";get("empty").hidden=Boolean(count);
  });
  window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});render();
+ fetch(new URL(prefix+'../library-covers.json',location.href),{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(c=>{libraryCovers=c;if(!location.hash||location.hash==='#')folderCards("",get("search").value.trim().toLowerCase());}).catch(()=>{});
 
 });
 </script></body></html>
+

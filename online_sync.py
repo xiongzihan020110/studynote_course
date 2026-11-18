@@ -21,10 +21,19 @@ def apply_online(repo, source, published_folder, check=False):
     pending = json.loads(manifest.read_text(encoding='utf-8'))
     prefix = 'knowledge-base/' + published_folder + '/'
     plan = []
+    directories = []
     for name, change in pending.items():
         if not name.startswith(prefix):
             raise ValueError('Invalid online change path')
         relative = PurePosixPath(name[len(prefix):])
+        if change.get('directory'):
+            if len(relative.parts) != 1 or relative.name.startswith('.') or any(c in relative.name for c in ':\\') or not change.get('deleted'):
+                raise ValueError('Invalid directory deletion')
+            directory = source / relative.name
+            if directory.is_symlink() or getattr(directory, 'is_junction', lambda: False)() or not directory.resolve().is_relative_to(source.resolve()):
+                raise ValueError('Invalid linked directory')
+            directories.append(directory)
+            continue
         if relative.is_absolute() or not relative.parts or any((p.startswith('.') and not (p == '.gitkeep' and len(relative.parts) == 2 and relative.parts[-1] == p)) or ':' in p or '\\' in p for p in relative.parts):
             raise ValueError('Invalid online change filename')
         local = source.joinpath(*relative.parts)
@@ -45,6 +54,17 @@ def apply_online(repo, source, published_folder, check=False):
         if local.is_dir() or current_hash != change.get('base'):
             raise ValueError('Online/local conflict: ' + str(relative) + '. Keep the desired version in Obsidian, then resolve this pending online edit before retrying.')
         plan.append((local, current, desired))
+    for directory in directories:
+        if not directory.exists():
+            continue
+        for child in directory.rglob('*'):
+            if child.is_symlink() or getattr(child, 'is_junction', lambda: False)():
+                raise ValueError('Directory contains a linked path')
+            if child.is_file():
+                name = prefix + child.relative_to(source).as_posix()
+                change = pending.get(name)
+                if not change or not change.get('deleted'):
+                    raise ValueError('Library contains a local-only file; keep it before retrying: ' + str(child))
     if check:
         print(f'{len(plan)} online edits waiting to be received locally.')
         return bool(pending)
@@ -68,6 +88,13 @@ def apply_online(repo, source, published_folder, check=False):
             finally:
                 Path(name).unlink(missing_ok=True)
         print('Received online edit: ' + str(local.relative_to(source)))
+    for directory in directories:
+        if directory.exists():
+            for child in sorted((p for p in directory.rglob('*') if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
+                child.rmdir()
+            directory.rmdir()
+            print('Received library removal: ' + directory.name)
     if pending:
         manifest.write_text('{}\n', encoding='utf-8')
     return bool(pending)
+
