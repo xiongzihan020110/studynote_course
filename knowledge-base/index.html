@@ -111,7 +111,10 @@ window.addEventListener("DOMContentLoaded",()=>{
  const homeTitle="欢迎来到Xizh的知识库";
  const get=id=>document.getElementById(id);
  const folders=new Set();
+ const attachmentFolder=name=>["附件","assets"].includes(name.toLowerCase());
+ const attachmentPath=path=>path.split("/").some(attachmentFolder);
  function addFolder(path){
+  if(attachmentPath(path))return;
   while(path&&!folders.has(path)){
    folders.add(path);
    path=parentOf(path);
@@ -127,7 +130,7 @@ window.addEventListener("DOMContentLoaded",()=>{
  }
  const sortNames=(a,b)=>a.localeCompare(b,"zh-CN",{numeric:true});
  const courseAliases={"python":"1023","writing":"1043","statistics":"1063"};
- const isAttachment=file=>!/\.md$/i.test(file.relative)||file.folder.split("/").includes("附件");
+ const isAttachment=file=>!/\.md$/i.test(file.relative)||attachmentPath(file.folder);
  function link(parent,href,label,className){
   const item=document.createElement("a");
   item.href=href;item.textContent=label;if(className)item.className=className;
@@ -223,7 +226,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   const notes=direct.filter(file=>!isAttachment(file)).sort((a,b)=>sortNames(a.title,b.title));
   renderPager(note,notes);
   const attachments=files.filter(file=>isAttachment(file)&&(file.folder===path||
-   (path?file.folder.startsWith(path+"/"):false)&&file.folder.slice(path.length+1).split("/")[0]==="附件"));
+   (path?file.folder.startsWith(path+"/"):false)&&attachmentFolder(file.folder.slice(path.length+1).split("/")[0])));
   side.hidden=!attachments.length;
   get("workspace").classList.toggle("single",!attachments.length);
   if(attachments.length){
