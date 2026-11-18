@@ -1,3 +1,1 @@
-:root{--bg:#0b1028;--paper:#161e3c;--ink:#f7f8ff;--accent:#ff84ad}
-.home{--bg:#f6eedb}.home .topbar{background:#f6eedb}.gold-action{background:#f0c91f}
-.reader{font-size:18px;line-height:1.85}.hero-photo h1{font-family:"Cormorant Garamond", "Songti SC", SimSun, serif}
+:root{--bg:#0b1028;--paper:#161e3c;--ink:#f7f8ff;--accent:#ff84ad}.home{--bg:#f6eedb}.home .topbar{background:#f6eedb}.gold-action{background:#f0c91f}.reader{font-size:18px;line-height:1.85}.hero-photo h1{font-family:"Cormorant Garamond",SimSun,serif}
