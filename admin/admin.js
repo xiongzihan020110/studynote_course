@@ -37,14 +37,14 @@ async function commitFiles(changes,message){
 }
 function escapeJSON(value){return JSON.stringify(value).replace(/</g,'\\u003c');}
 async function contentChange(path,data,baseline){
- if(!path.startsWith(prefix)||path.split('/').some(p=>p==='..'||p.startsWith('.')))throw Error('文件路径无效');
+ if(!path.startsWith(prefix)||path.split('/').some(p=>p==='..'||(p.startsWith('.')&&!(p==='.gitkeep'&&path===prefix+path.slice(prefix.length).split('/')[0]+'/.gitkeep'))))throw Error('文件路径无效');
  if((entries.find(e=>e.path===path)?.sha??null)!==baseline)throw Error('该文件已发生变化，请重新打开');
  const pending={...queue};pending[path]={base:(Object.hasOwn(pending,path)?pending[path].base:baseline),deleted:data===null};
  const pages=['index.html','knowledge-base/index.html'];const changes={[path]:data};
  const remaining=entries.filter(e=>e.path.startsWith(prefix)&&e.path!==path).map(e=>e.path);if(data!==null)remaining.push(path);
  const first=await read(pages[0]);const match=first.match(/\bfiles=(\[.*?\]), prefix=/s);if(!match)throw Error('网站目录格式不兼容');
  const previous=JSON.parse(match[1]);const old=new Map(previous.map(f=>[decodeURIComponent(f.path),f]));let id=Math.max(0,...previous.map(f=>f.id))+1;
- const files=remaining.sort().map(p=>old.get(p.slice('knowledge-base/'.length))??{id:id++,group:'other',title:p.split('/').at(-1),path:p.slice('knowledge-base/'.length).split('/').map(encodeURIComponent).join('/')});
+ const files=remaining.filter(p=>!p.endsWith('/.gitkeep')).sort().map(p=>old.get(p.slice('knowledge-base/'.length))??{id:id++,group:'other',title:p.split('/').at(-1),path:p.slice('knowledge-base/'.length).split('/').map(encodeURIComponent).join('/')});
  const folders=new Set();for(const p of remaining){let parts=p.slice(prefix.length).split('/');parts.pop();if(parts.length)folders.add(parts[0]);}
  for(const page of pages){let html=page===pages[0]?first:await read(page);html=html.replace(/(\bfiles=)(\[.*?\])(, prefix=)/s,(_,a,b,c)=>a+escapeJSON(files)+c).replace(/^( +const syncedFolders=)(\[.*\]);$/m,(_,a)=>a+escapeJSON([...folders].sort())+';');changes[page]=html;}
  changes['online-changes.json']=JSON.stringify(pending,null,2);
@@ -52,7 +52,7 @@ async function contentChange(path,data,baseline){
 }
 function draw(){
  $('path').textContent='知识库 / '+folder;const body=$('list');body.replaceChildren();const folders=new Set(),files=[];
- for(const e of entries){if(!e.path.startsWith(prefix+folder))continue;const rest=e.path.slice((prefix+folder).length);if(!rest)continue;if(rest.includes('/'))folders.add(rest.split('/')[0]);else files.push(e);}
+ for(const e of entries){if(!e.path.startsWith(prefix+folder))continue;const rest=e.path.slice((prefix+folder).length);if(!rest)continue;if(rest.includes('/'))folders.add(rest.split('/')[0]);else if(rest!=='.gitkeep')files.push(e);}
  function row(name,action){const tr=document.createElement('tr'),td=document.createElement('td'),ops=document.createElement('td');td.append(name);tr.append(td,ops);body.append(tr);action(ops);}
  for(const name of [...folders].sort()){const b=document.createElement('button');b.className='name';b.textContent='📁 '+name;b.onclick=()=>{folder+=name+'/';draw();};row(b,()=>{});}
  for(const f of files.sort((a,b)=>a.path.localeCompare(b.path,'zh-CN',{numeric:true}))){const label=document.createElement('span');label.textContent=f.path.split('/').at(-1);row(label,ops=>{
@@ -72,6 +72,15 @@ async function connectRemembered(value){
 }
 $('connect').onclick=()=>run(async()=>{const value=$('token').value.trim();$('token').value='';if(!value)throw Error('请输入访问令牌');await connectRemembered(value);});
 $('logout').onclick=()=>{savedAuth.clear();token='';location.reload();};$('up').onclick=()=>{folder=folder.split('/').filter(Boolean).slice(0,-1).join('/');if(folder)folder+='/';draw();};$('root').onclick=()=>{folder='';draw();};$('reload').onclick=()=>run(refresh);
+$('new-library').onclick=()=>run(async()=>{
+ const answer=prompt('新建知识库名称（将显示在首页）：');
+ if(answer===null)return;
+ const name=answer.trim();
+ if(!name||name.length>100||/[\\\\/<>:"|?*\x00-\x1f]/.test(name)||name.startsWith('.')||/[. ]$/.test(name)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name))throw Error('请输入有效的知识库名称，不要包含斜杠或特殊字符');
+ if(entries.some(e=>e.path.toLowerCase().startsWith((prefix+name+'/').toLowerCase())))throw Error('已有同名知识库');
+ await contentChange(prefix+name+'/.gitkeep',enc.encode(''),null);
+ folder=name+'/';draw();
+});
 $('new').onclick=()=>{editPath='';editSha=null;original='';$('filename').value='';$('filename').disabled=false;$('text').value='';$('edit-status').textContent='';$('editor').showModal();};$('close').onclick=close;$('editor').addEventListener('cancel',e=>{e.preventDefault();close();});
 $('save-note').onclick=()=>run(async()=>{let name=$('filename').value.trim();if(!name||/[\\/<>:"|?*]/.test(name))throw Error('请填写有效的文件名');if(!name.endsWith('.md'))name+='.md';await contentChange(editPath||prefix+folder+name,enc.encode($('text').value),editSha);original=$('text').value;$('editor').close();});
 $('upload').onclick=()=>$('file').click();$('file').onchange=()=>run(async()=>{for(const file of $('file').files){if(file.size>15*1024*1024)throw Error('单个文件请小于 15 MB');const path=prefix+folder+file.name;const old=entries.find(e=>e.path===path);if(old&&!confirm('覆盖 '+file.name+'？'))continue;await contentChange(path,new Uint8Array(await file.arrayBuffer()),old?.sha??null);}$('file').value='';});
