@@ -45,7 +45,7 @@ async function contentChange(path,data,baseline){
  const first=await read(pages[0]);const match=first.match(/\bfiles=(\[.*?\]), prefix=/s);if(!match)throw Error('网站目录格式不兼容');
  const previous=JSON.parse(match[1]);const old=new Map(previous.map(f=>[decodeURIComponent(f.path),f]));let id=Math.max(0,...previous.map(f=>f.id))+1;
  const files=remaining.sort().map(p=>old.get(p.slice('knowledge-base/'.length))??{id:id++,group:'other',title:p.split('/').at(-1),path:p.slice('knowledge-base/'.length).split('/').map(encodeURIComponent).join('/')});
- const folders=new Set();for(const p of remaining){let parts=p.slice(prefix.length).split('/');parts.pop();while(parts.length){folders.add(parts.join('/'));parts.pop();}}
+ const folders=new Set();for(const p of remaining){let parts=p.slice(prefix.length).split('/');parts.pop();if(parts.length)folders.add(parts[0]);}
  for(const page of pages){let html=page===pages[0]?first:await read(page);html=html.replace(/(\bfiles=)(\[.*?\])(, prefix=)/s,(_,a,b,c)=>a+escapeJSON(files)+c).replace(/^( +const syncedFolders=)(\[.*\]);$/m,(_,a)=>a+escapeJSON([...folders].sort())+';');changes[page]=html;}
  changes['online-changes.json']=JSON.stringify(pending,null,2);
  await commitFiles(changes,'Update knowledge base content from online management');
