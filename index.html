@@ -231,7 +231,7 @@ window.addEventListener("DOMContentLoaded",()=>{
    heading(side,"源文件下载");
    for(const file of attachments){
     const item=link(side,prefix+file.path,path?file.relative.slice(path.length+1):file.title);
-+    item.title=file.relative;
+    item.title=file.relative;
     item.download=file.title;
    }
   }
